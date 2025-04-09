@@ -4,7 +4,7 @@ const API_URL = 'http://localhost:8080';
 
 // Gọi API đăng nhập
 export const LoginAccount = async (user) => {
-    const response = await axios.post(`${API_URL}/api/auth/login`, user);
+    const response = await axios.post(`${API_URL}/api/auth/login`, user,{withCredentials: true});
     return response.data; // Chắc chắn rằng API trả về dữ liệu đúng
   };
   
@@ -19,6 +19,32 @@ export const LoginAccount = async (user) => {
     await axios.post(`${API_URL}/api/auth/logout`);
   };
   
-  // export const GetProfile = async () => {
-  //   await axios.get(`${API_URL}/api/auth/get-profile`);
-  // }
+  export const GetProfile = async () => {
+    const response = await axios.get(`${API_URL}/api/profile`, {
+      withCredentials: true 
+    });
+    return response.data;
+  };
+  
+  export async function UpdateProfile(data) {
+    if (data) {
+      return axios.put(`${API_URL}/api/profile/update`, data, {withCredentials: true}).then(res => res.data);
+    } else {
+      return axios.get(`${API_URL}/api/profile`,{withCredentials: true}).then(res => res.data);
+    }
+  }
+
+// Upload avatar
+// export const UploadFile = async () =>{
+//   await axios.post(`${API_URL}/api/upload`);
+// }
+// authen.js
+export const UploadFile = async (formData) => {
+  const response = await axios.post(`${API_URL}/api/upload`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    withCredentials: true
+  });
+  return response.data; // giả sử backend trả lại URL của ảnh
+};

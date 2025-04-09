@@ -83,7 +83,8 @@ const LoginComponent = () => {
                         {error.password && <div className="invalid-feedback">{error.password}</div>}
                     </div>
                     <button type="submit" className="btn btn-primary w-100 mb-3">Đăng nhập</button>
-                    <span>Nếu bạn chưa có tài khoản hãy <a href="/dang-ky">đăng ký</a></span>
+                    <span>Nếu bạn chưa có tài khoản hãy <a href="/dang-ky">đăng ký</a></span><br />
+                    <a href="/">Trang chủ</a>
                 </form>
             </div>
 

@@ -4,6 +4,7 @@ import ProfileComponent from './Component/ProfileComponent';
 import PrivateRoute from './Component/PrivateRoute';
 import RegisterComponent from './Component/RegisterComponent';
 import LoginComponent from './Component/LoginComponent';
+import EditProfile from './Component/EditProfile';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         {/* Bọc đường dẫn cần bảo vệ trong PrivateRoute */}
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<ProfileComponent />} />
+          <Route path='/edit-profile' element={<EditProfile/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

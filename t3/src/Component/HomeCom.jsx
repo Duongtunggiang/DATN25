@@ -46,6 +46,7 @@ const HomeCom = () => {
             {user ? (
                 <div>
                     <h3>Xin chào, {user.username}!</h3>
+                    <br /><a href="/profile">Cá nhân</a>
                     <button onClick={handleLogout} className="btn btn-danger">Đăng xuất</button>
                 </div>
             ) : (
