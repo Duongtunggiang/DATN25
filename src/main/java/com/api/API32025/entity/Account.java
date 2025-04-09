@@ -20,17 +20,42 @@ public class Account {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "status", nullable = false)
+    private String status = "active";
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    public Account(){}
-    public Account(Long id, String username, String email, String password, Role role) {
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Profile profile;
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public Account(Long id, String username, String email, String password, String status, Role role, Profile profile) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.status = status;
         this.role = role;
+        this.profile = profile;
+    }
+
+    public Account(){}
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Long getId() {

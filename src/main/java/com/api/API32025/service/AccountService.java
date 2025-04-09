@@ -3,6 +3,7 @@ package com.api.API32025.service;
 import com.api.API32025.dto.LoginDTO;
 import com.api.API32025.dto.RegisterDTO;
 import com.api.API32025.entity.Account;
+import com.api.API32025.entity.Profile;
 import com.api.API32025.entity.Role;
 import com.api.API32025.respository.AccountRepository;
 import com.api.API32025.respository.RoleRepository;
@@ -47,8 +48,23 @@ public class AccountService {
         Account account = new Account();
         account.setUsername(registerDTO.getUsername());
         account.setEmail(registerDTO.getEmail());
-        account.setPassword(passwordEncoder.encode(registerDTO.getPassword())); // Mã hóa mật khẩu
+        account.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
+        account.setStatus("active");
         account.setRole(role);
+
+        // Tạo profile trống ban đầu
+        Profile profile = new Profile();
+        profile.setFirstName("");
+        profile.setLastName("");
+        profile.setDateOfBirth(null);
+        profile.setNationalId("");
+        profile.setDrivingLicense("");
+        profile.setPhoneNumber("");
+        profile.setEmail(registerDTO.getEmail());
+        profile.setAvatarPath("/images/default-avatar.png"); // nếu bạn muốn có ảnh mặc định
+
+        profile.setAccount(account);
+        account.setProfile(profile);
 
         accountRepository.save(account);
         return "Đăng ký thành công!";
@@ -60,6 +76,10 @@ public class AccountService {
         if (account == null || !passwordEncoder.matches(loginDTO.getPassword(), account.getPassword())) {
             throw new RuntimeException("Email hoặc mật khẩu không đúng!");
         }
+        if (!account.getStatus().equals("active")) {
+            throw new RuntimeException("Tài khoản của bạn đã bị vô hiệu hóa!");
+        }
+
 
         // Lưu thông tin vào session
         session.setAttribute("userId", account.getId());

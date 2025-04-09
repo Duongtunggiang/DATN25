@@ -24,12 +24,18 @@ public class SecurityConfig {
                 .cors(withDefaults()) // Cho phép CORS
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**") // Cho phép tất cả các API trong /api/auth mà không cần login
-                        .permitAll()
+                                .permitAll()
+                        .requestMatchers("/api/profile/**")
+                                .permitAll()
+                        .requestMatchers("/api/upload/**").hasAnyAuthority("CUSTOMER", "CAROWNER","ADMIN")
+//                              .authenticated()
+
+
                         .anyRequest().authenticated() // Các API khác yêu cầu xác thực
                 )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Không dùng session
-                )
+//                .sessionManagement(session -> session
+//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Không dùng session
+//                )
                 .build();
     }
 
