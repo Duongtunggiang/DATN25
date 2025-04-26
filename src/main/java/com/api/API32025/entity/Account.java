@@ -29,6 +29,12 @@ public class Account {
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    private Wallet wallet;
+
+    public Wallet getWallet() { return wallet; }
+    public void setWallet(Wallet wallet) { this.wallet = wallet; }
+
 
     public Profile getProfile() {
         return profile;
@@ -38,7 +44,7 @@ public class Account {
         this.profile = profile;
     }
 
-    public Account(Long id, String username, String email, String password, String status, Role role, Profile profile) {
+    public Account(Long id, String username, String email, String password, String status, Role role, Profile profile, Wallet wallet) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -46,6 +52,7 @@ public class Account {
         this.status = status;
         this.role = role;
         this.profile = profile;
+        this.wallet = wallet;
     }
 
     public Account(){}

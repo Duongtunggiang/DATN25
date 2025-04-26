@@ -1,0 +1,69 @@
+package com.api.API32025.entity;
+
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "wallet")
+public class Wallet {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private int balance; // Số dư
+
+    @Column(name = "currency")
+    private String currency; // Loại tiền tệ (VD: VND, USD...)
+
+    @Column(name = "status")
+    private String status; // Trạng thái ví (ACTIVE, LOCKED, etc)
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    // Liên kết 1-1 với Account
+    @OneToOne
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions = new ArrayList<>();
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public Wallet() {
+    }
+
+    public Wallet(Long id, int balance, String currency, String status, LocalDateTime createdAt, Account account, List<Transaction> transactions) {
+        this.id = id;
+        this.balance = balance;
+        this.currency = currency;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.account = account;
+        this.transactions = transactions;
+    }
+
+    // Getters/Setters
+    public Long getId() { return id; }
+    public int getBalance() { return balance; }
+    public void setBalance(int balance) { this.balance = balance; }
+
+    public String getCurrency() { return currency; }
+    public void setCurrency(String currency) { this.currency = currency; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public Account getAccount() { return account; }
+    public void setAccount(Account account) { this.account = account; }
+}
+

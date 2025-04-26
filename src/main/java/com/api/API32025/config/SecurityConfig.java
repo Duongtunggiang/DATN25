@@ -29,7 +29,7 @@ public class SecurityConfig {
                                 .permitAll()
                         .requestMatchers("/api/upload/**").hasAnyAuthority("CUSTOMER", "CAROWNER","ADMIN")
 //                              .authenticated()
-
+                        .requestMatchers("/api/wallet/**").hasAnyAuthority("CUSTOMER","CAROWNER")
 
                         .anyRequest().authenticated() // Các API khác yêu cầu xác thực
                 )
