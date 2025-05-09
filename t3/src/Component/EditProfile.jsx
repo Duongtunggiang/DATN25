@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UpdateProfile } from '../BackEnd/authen';
+import { fetchProfile, updateProfile } from '../BackEnd/authen';
 
 function EditProfile() {
   const [profile, setProfile] = useState({
@@ -8,18 +8,28 @@ function EditProfile() {
     dateOfBirth: '',
     nationalId: '',
     drivingLicense: '',
-    phoneNumber: ''
+    phoneNumber: '',
+    avatarPath: ''
   });
+
+  const [avatarFile, setAvatarFile] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await UpdateProfile(); // Hàm này phải trả về dữ liệu profile từ backend
+        const data = await fetchProfile();
+
+        if (data.dateOfBirth) {
+          const parts = data.dateOfBirth.split('-'); // dd-MM-yyyy
+          data.dateOfBirth = `${parts[2]}-${parts[1]}-${parts[0]}`; // yyyy-MM-dd
+        }
+
         setProfile(data);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
       }
     };
+
     fetchData();
   }, []);
 
@@ -27,21 +37,57 @@ function EditProfile() {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
+  const handleAvatarChange = (e) => {
+    setAvatarFile(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    const formData = new FormData();
+    formData.append("firstName", profile.firstName);
+    formData.append("lastName", profile.lastName);
+    formData.append("dateOfBirth", profile.dateOfBirth);
+    formData.append("nationalId", profile.nationalId);
+    formData.append("drivingLicense", profile.drivingLicense);
+    formData.append("phoneNumber", profile.phoneNumber);
+  
+    if (avatarFile) {
+      formData.append("avatar", avatarFile);
+    }
+  
     try {
-      await UpdateProfile(profile); // 👈 Gửi dữ liệu profile đã chỉnh sửa lên backend
+      await updateProfile(formData); // API call
       alert("Cập nhật thành công!");
     } catch (err) {
       alert("Lỗi khi cập nhật thông tin!");
       console.error(err);
     }
   };
+  
 
   return (
     <div className="container mt-5">
-      <form onSubmit={handleSubmit} className="card shadow-lg p-4">
+      <form onSubmit={handleSubmit} className="card shadow-lg p-4" encType="multipart/form-data">
         <h4 className="mb-4">Chỉnh sửa thông tin cá nhân</h4>
+
+        {profile.avatarPath && (
+          <div className="mb-3 text-center">
+            <img
+              src={profile.avatarPath.startsWith('http') 
+                ? profile.avatarPath 
+                : `http://localhost:8080${profile.avatarPath}`}
+              alt="Ảnh đại diện"
+              className="rounded-circle img-thumbnail"
+              style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+            />
+          </div>
+        )}
+
+        <div className="mb-3">
+          <label className="form-label">Chọn ảnh mới</label>
+          <input type="file" className="form-control" accept="image/*" onChange={handleAvatarChange} />
+        </div>
 
         <div className="mb-3">
           <label className="form-label">Họ</label>

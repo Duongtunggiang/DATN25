@@ -48,3 +48,17 @@ export const UploadFile = async (formData) => {
   });
   return response.data; // giả sử backend trả lại URL của ảnh
 };
+export const fetchProfile = async () => {
+  const response = await axios.get('http://localhost:8080/api/profile', {
+    withCredentials: true
+  });
+  return response.data;
+};
+export const updateProfile = async (formData) => {
+  await axios.put("http://localhost:8080/api/profile/update", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+    withCredentials: true
+  });
+  
+};
+
