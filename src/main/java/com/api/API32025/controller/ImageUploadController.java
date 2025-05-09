@@ -19,22 +19,25 @@ import java.util.UUID;
 @RequestMapping("/api/upload")
 public class ImageUploadController {
 
-    @Value("${upload.path}") // Khai báo trong application.properties
+    @Value("${upload.path}")
     private String uploadPath;
 
     @PostMapping("/avatar")
     public ResponseEntity<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
         try {
             String filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            Path path = Paths.get(uploadPath, "avatars", filename);
-            Files.createDirectories(path.getParent()); // tạo folder nếu chưa có
-            Files.write(path, file.getBytes());
+            Path folderPath = Paths.get(uploadPath, "avatars");
+            Files.createDirectories(folderPath); // tạo folder nếu chưa có
 
-            String urlPath = "/uploads/avatars/" + filename;
-            return ResponseEntity.ok(urlPath); // đường dẫn FE lưu vào profile.avatarPath
+            Path filePath = folderPath.resolve(filename);
+            Files.write(filePath, file.getBytes());
+
+            String urlPath = "/uploads/avatars/" + filename; // trả về URL dùng để truy cập ảnh
+            return ResponseEntity.ok(urlPath);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi upload ảnh");
         }
     }
 }
+
 
