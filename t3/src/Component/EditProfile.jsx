@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { fetchProfile, updateProfile } from '../BackEnd/authen';
+import { fetchProfile, GetProfile, UpdateProfile } from '../BackEnd/authen';
+
+
 
 function EditProfile() {
   const [profile, setProfile] = useState({
@@ -17,7 +19,7 @@ function EditProfile() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchProfile();
+        const data = await GetProfile();
 
         if (data.dateOfBirth) {
           const parts = data.dateOfBirth.split('-'); // dd-MM-yyyy
@@ -57,12 +59,17 @@ function EditProfile() {
     }
   
     try {
-      await updateProfile(formData); // API call
+      await UpdateProfile(formData); // API call
       alert("Cập nhật thành công!");
     } catch (err) {
       alert("Lỗi khi cập nhật thông tin!");
       console.error(err);
     }
+    const avatarUrl = profile.avatarPath
+    ? profile.avatarPath.startsWith('http') 
+      ? profile.avatarPath 
+      : `http://localhost:8080${profile.avatarPath}`
+    : defaultAvatar;
   };
   
 
@@ -121,7 +128,13 @@ function EditProfile() {
 
         <button className="btn btn-success" type="submit">Lưu thay đổi</button>
       </form>
-    </div>
+      <div className='container'> 
+          <div className='d-flex'>
+            <a href="/profile" className='btn btn-warning'>Quay lại</a>
+            <a href="/change-password" className='btn btn-secondary'>Đổi mật khẩu</a>
+          </div>
+      </div>
+    </div>  
   );
 }
 

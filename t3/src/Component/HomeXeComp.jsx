@@ -1,9 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { getCars, LogoutAccount } from '../BackEnd/authen';
 import { useNavigate } from 'react-router-dom';
-import { LoginAccount, LogoutAccount } from '../BackEnd/authen';
-import ToastNotification from '../Alert/ToastNotification';
 
-const HomeCom = () => {
+
+function HomeXeComp() {
+  const [cars, setCars] = useState([]);
+
+      useEffect(() => {
+      const fetchCars = async () => {
+        try {
+          const cars = await getCars(); // đây đã là data
+          setCars(cars);
+        } catch (error) {
+          console.error("Error fetching cars:", error);
+        }
+      };
+
+      fetchCars();
+    }, []);
+
+
+    const formatPrice = (price) => {
+      if (typeof price !== 'number') return 'Đang cập nhật';
+      return price.toLocaleString('vi-VN') + '₫/ngày';
+    };
+
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [toastMessage, setToastMessage] = useState('');
@@ -38,12 +60,9 @@ const HomeCom = () => {
             window.location.reload(); 
         }, 100); 
     };
-    
-
-    return (
-        <div>
-            <h2>Trang chủ</h2>
-            {user ? (
+  return (
+    <div className="container mt-4">
+      {user ? (
                 <div>
                     <h3>Xin chào, {user.username}!</h3>
                     <br /><a href="/profile">Cá nhân</a>
@@ -57,9 +76,25 @@ const HomeCom = () => {
                 </div>
             )}
 
-            {toastMessage && <ToastNotification message={toastMessage} onClose={() => setToastMessage('')} />}
-        </div>
-    );
+      <a href="/them-xe">Thêm xe mới</a>
+      <h2 className="text-center mb-4">Danh sách xe cho thuê</h2>
+      <div className="row">
+        {cars.map((car) => (
+          <div className="col-md-4 mb-4" key={car.id}>
+            <div className="card shadow-sm h-100">
+              <img src={car.image} className="card-img-top" alt={car.name} />
+              <div className="card-body">
+                <h5 className="card-title">{car.name}</h5>
+                <p className="card-text text-danger fw-bold">{formatPrice(car.price)}</p>
+                <a href={`/chi-tiet-xe/${car.id}`} className="btn btn-primary w-100">Xem chi tiết</a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {toastMessage && <ToastNotification message={toastMessage} onClose={() => setToastMessage('')} />}
+    </div>
+  );
 }
 
-export default HomeCom;
+export default HomeXeComp;

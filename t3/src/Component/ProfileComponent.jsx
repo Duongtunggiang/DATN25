@@ -28,6 +28,19 @@ const ProfileComponent = () => {
       ? profile.avatarPath 
       : `http://localhost:8080${profile.avatarPath}`
     : defaultAvatar;
+  const getRoleFromToken = () => {
+  const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.role;
+    } catch (error) {
+      console.error("Không thể giải mã token:", error);
+      return null;
+    }
+  };
+  const role = getRoleFromToken();
 
   return (
     <div className="container mt-5">
@@ -80,14 +93,15 @@ const ProfileComponent = () => {
                 </tr>
               </tbody>
             </table>
-            <div className='d-flex'>
-              <a href="/" className='btn btn-danger'>Quay lại</a>
-              <div className="text-end">
-                <a className="btn btn-outline-primary" href="/edit-profile">
-                  Chỉnh sửa thông tin
-                </a>
-              </div>
+            <div className='d-flex justify-content-between'>
+              <a href={role === 'CUSTOMER' ? '/' : '/home-xe'} className='btn btn-danger'>
+                Quay lại
+              </a>
+              <a className="btn btn-outline-primary" href="/edit-profile">
+                Chỉnh sửa thông tin
+              </a>
             </div>
+
             
           </div>
         </div>

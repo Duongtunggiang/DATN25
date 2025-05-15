@@ -2,59 +2,84 @@ import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { LoginAccount } from '../BackEnd/authen';
 import ToastNotification from '../Alert/ToastNotification';
+import { useAuth } from "../Authen/AuthContext";
 
 const LoginComponent = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState({ email: '', password: '' });
+    const [error, setError] = useState({ email: '', password: '', general: '' });
     const [toastMessage, setToastMessage] = useState('');
+    const { login } = useAuth();
     const navigate = useNavigate();
+
     useEffect(() => {
         const registerMessage = localStorage.getItem('registerMessage');
         if (registerMessage) {
             setToastMessage(registerMessage);
-            localStorage.removeItem('registerMessage'); 
+            localStorage.removeItem('registerMessage');
         }
     }, []);
-    
+
     const handleLogin = async (e) => {
-        e.preventDefault();
-    
-        let formIsValid = true;
-        let errors = { email: '', password: '' };
-    
-        if (!email) {
-            formIsValid = false;
-            errors.email = 'Email không được bỏ trống!';
+    e.preventDefault();
+    setError({ email: '', password: '', general: '' });
+
+    let isValid = true;
+    const newError = { email: '', password: '', general: '' };
+
+    if (!email) {
+        newError.email = 'Email không được bỏ trống!';
+        isValid = false;
+    }
+    if (!password) {
+        newError.password = 'Mật khẩu không được bỏ trống!';
+        isValid = false;
+    }
+    if (!isValid) {
+        setError(newError);
+        return;
+    }
+
+    try {
+        const res = await LoginAccount({ email, password });
+
+        const token = res.token;
+        const user = res.user;
+
+        if (!token || !user) {
+            throw new Error('Đăng nhập thất bại!');
         }
-        if (!password) {
-            formIsValid = false;
-            errors.password = 'Mật khẩu không được bỏ trống!';
-        }
-    
-        if (!formIsValid) {
-            setError(errors);
-            return;
-        }
-        
-    
-        try {
-            // const response = await LoginAccount(user);
-            // console.log(response);
-            // localStorage.setItem('user', JSON.stringify(response.user));
-            // navigate('/');
-            const response = await LoginAccount({ email, password });
-            localStorage.setItem('user', JSON.stringify(response.user));
-            localStorage.setItem('loginMessage', 'Đăng nhập thành công!');
+
+        // ✅ Lưu token & user vào localStorage
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('loginMessage', 'Đăng nhập thành công!');
+
+        login(user); // Cập nhật context
+
+        if (user.roles.includes('CUSTOMER')) {
             navigate('/');
-        } catch (error) {
-            if (error.response) {
-                setError({ general: error.response.data?.message || 'Email hoặc mật khẩu không đúng!' });
-            } else {
-                setError({ general: 'Lỗi kết nối, vui lòng thử lại!' });
-            }
+        } else {
+            navigate('/home-xe');
         }
-    };
+
+    } catch (error) {
+        // Kiểm tra loại lỗi trả về
+        let errorMessage = 'Đã xảy ra lỗi! Vui lòng thử lại.';
+        
+        if (error.response) {
+            errorMessage = error.response?.data?.message || 'Email hoặc mật khẩu không đúng!';
+        } else if (error.request) {
+            errorMessage = 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại kết nối.';
+        }
+
+        setError({
+            ...error,
+            general: errorMessage,
+        });
+    }
+};
+
 
     return (
         <div className="container">
@@ -91,6 +116,6 @@ const LoginComponent = () => {
             {toastMessage && <ToastNotification message={toastMessage} onClose={() => setToastMessage('')} />}
         </div>
     );
-}
+};
 
 export default LoginComponent;
