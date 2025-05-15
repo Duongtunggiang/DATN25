@@ -1,18 +1,24 @@
 package com.api.API32025.service;
 
+import com.api.API32025.dto.ChangePasswordDTO;
 import com.api.API32025.dto.LoginDTO;
 import com.api.API32025.dto.RegisterDTO;
-import com.api.API32025.entity.Account;
-import com.api.API32025.entity.Profile;
-import com.api.API32025.entity.Role;
+import com.api.API32025.entity.*;
+import com.api.API32025.jwt.JwtUtil;
 import com.api.API32025.respository.AccountRepository;
+import com.api.API32025.respository.CarOwnerRepository;
+import com.api.API32025.respository.CustomerRepository;
 import com.api.API32025.respository.RoleRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -27,24 +33,28 @@ public class AccountService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+    @Autowired
+    private CarOwnerRepository carOwnerRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
     public String register(RegisterDTO registerDTO) {
-        // Kiểm tra email đã tồn tại chưa
         if (accountRepository.findByEmail(registerDTO.getEmail()) != null) {
             throw new RuntimeException("Email đã tồn tại!");
         }
 
-        // Kiểm tra mật khẩu nhập lại
         if (!registerDTO.getPassword().equals(registerDTO.getConfirmPassword())) {
             throw new RuntimeException("Mật khẩu nhập lại không khớp!");
         }
 
-        // Tìm role
         Role role = roleRepository.findByRoleName(registerDTO.getRoleName());
         if (role == null) {
             throw new RuntimeException("Vai trò không hợp lệ!");
         }
 
-        // Tạo tài khoản mới
         Account account = new Account();
         account.setUsername(registerDTO.getUsername());
         account.setEmail(registerDTO.getEmail());
@@ -52,25 +62,47 @@ public class AccountService {
         account.setStatus("active");
         account.setRole(role);
 
-        // Tạo profile trống ban đầu
+        // Tạo profile mặc định
         Profile profile = new Profile();
         profile.setFirstName("");
         profile.setLastName("");
         profile.setDateOfBirth(null);
-        profile.setNationalId("");
-        profile.setDrivingLicense("");
+        profile.setNationalId(null);
+        profile.setDrivingLicense(null);
         profile.setPhoneNumber("");
         profile.setEmail(registerDTO.getEmail());
-        profile.setAvatarPath("/images/default-avatar.png"); // nếu bạn muốn có ảnh mặc định
-
+        profile.setAvatarPath("/Images/avatars/default-avatar.png");
         profile.setAccount(account);
         account.setProfile(profile);
 
-        accountRepository.save(account);
+        // Lưu Account trước (để có ID)
+        Account savedAccount = accountRepository.save(account);
+
+        // Nếu là CHỦ XE
+        if ("CAROWNER".equals(role.getRoleName())) {
+            CarOwner carOwner = new CarOwner();
+            carOwner.setAccount(savedAccount);
+            carOwnerRepository.save(carOwner);
+
+            savedAccount.setCarOwner(carOwner);
+            accountRepository.save(savedAccount);
+        }
+
+        // Nếu là KHÁCH HÀNG
+        if ("CUSTOMER".equals(role.getRoleName())) {
+            Customer customer = new Customer();
+            customer.setAccount(savedAccount);
+            customerRepository.save(customer);
+
+            savedAccount.setCustomer(customer);
+            accountRepository.save(savedAccount);
+        }
+
         return "Đăng ký thành công!";
     }
 
-    public Map<String, Object> login(LoginDTO loginDTO, HttpSession session) {
+
+    public Map<String, Object> login(LoginDTO loginDTO) {
         Account account = accountRepository.findByEmail(loginDTO.getEmail());
 
         if (account == null || !passwordEncoder.matches(loginDTO.getPassword(), account.getPassword())) {
@@ -80,29 +112,44 @@ public class AccountService {
             throw new RuntimeException("Tài khoản của bạn đã bị vô hiệu hóa!");
         }
 
+        String token = jwtUtil.generateToken(account);
 
-        // Lưu thông tin vào session
-        session.setAttribute("userId", account.getId());
-        session.setAttribute("username", account.getUsername());
-        session.setAttribute("role", account.getRole().getRoleName());
-
-        // Tạo response trả về
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Đăng nhập thành công!");
+        response.put("token", token);
         response.put("user", Map.of(
                 "id", account.getId(),
                 "username", account.getUsername(),
                 "email", account.getEmail(),
-                "role", account.getRole().getRoleName()
+                "roles", List.of(account.getRole().getRoleName()) // đảm bảo frontend có .includes("CUSTOMER")
         ));
 
         return response;
     }
 
+
     public void logout(HttpSession session) {
         session.invalidate();
     }
+    public void changePassword(ChangePasswordDTO changePasswordDTO) {
+        // Lấy tài khoản hiện tại từ SecurityContext
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        // Kiểm tra mật khẩu cũ có đúng không
+        if (!passwordEncoder.matches(changePasswordDTO.getOldPassword(), account.getPassword())) {
+            throw new RuntimeException("Mật khẩu cũ không đúng!");
+        }
+
+        // Kiểm tra mật khẩu mới và xác nhận mật khẩu mới có khớp không
+        if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
+            throw new RuntimeException("Mật khẩu mới và xác nhận mật khẩu không khớp!");
+        }
+
+        // Cập nhật mật khẩu mới
+        account.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+        accountRepository.save(account);
+
+        SecurityContextHolder.clearContext(); // log out
+    }
 
 }
 

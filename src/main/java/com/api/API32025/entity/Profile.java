@@ -23,10 +23,10 @@ public class Profile {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @Column(name = "national_id", unique = true) // CCCD
+    @Column(name = "national_id", unique = true,nullable = true) // CCCD
     private String nationalId;
 
-    @Column(name = "driving_license_no", unique = true) // Số bằng lái xe
+    @Column(name = "driving_license_no", unique = true,nullable = true) // Số bằng lái xe
     private String drivingLicense;
 
     @Column(name = "phone_number")

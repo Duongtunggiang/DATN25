@@ -4,6 +4,7 @@ import com.api.API32025.dto.ProfileDTO;
 import com.api.API32025.entity.Account;
 import com.api.API32025.entity.Profile;
 import com.api.API32025.respository.AccountRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +47,7 @@ public class ProfileService {
 
         accountRepository.save(account); // nhờ cascade để save luôn profile
     }
-
+    @Transactional
     public ProfileDTO getProfileByAccountId(Long accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản"));
@@ -67,6 +68,7 @@ public class ProfileService {
         dto.setDrivingLicense(profile.getDrivingLicense());
         dto.setPhoneNumber(profile.getPhoneNumber());
         dto.setAvatarPath(profile.getAvatarPath());
+        dto.setRole(account.getRole().getRoleName());
 
 
         dto.setEmail(profile.getEmail());

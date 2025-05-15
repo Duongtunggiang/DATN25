@@ -1,5 +1,6 @@
 package com.api.API32025.config;
 
+import com.api.API32025.jwt.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -26,30 +28,29 @@ public class SecurityConfig implements WebMvcConfigurer{
         registry
                 .addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadPath + "/");
+        registry
+                .addResourceHandler("/Images/**")
+                .addResourceLocations("file:" + uploadPath + "/");
+
     }
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) // Tắt CSRF để tránh lỗi bảo mật khi gọi API từ Postman
-                .cors(withDefaults()) // Cho phép CORS
+                .csrf(csrf -> csrf.disable())
+                .cors(withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Tắt session
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**") // Cho phép tất cả các API trong /api/auth mà không cần login
-                                .permitAll()
-                        .requestMatchers("/api/profile/**")
-                                .permitAll()
-                        .requestMatchers("/api/upload/**").hasAnyAuthority("CUSTOMER", "CAROWNER","ADMIN")
-//                              .authenticated()
-                        .requestMatchers("/api/wallet/**").hasAnyAuthority("CUSTOMER","CAROWNER")
+                        .requestMatchers("/Images/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/uploads/**").permitAll()
+                        .requestMatchers("/api/profile/**").authenticated()
 
-                        .requestMatchers("/uploads/**")
-                                .permitAll()
-                        .anyRequest().authenticated() // Các API khác yêu cầu xác thực
+                        .anyRequest().authenticated()
                 )
-//                .sessionManagement(session -> session
-//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Không dùng session
-//                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 
     @Bean
     public WebMvcConfigurer webMvcConfigurer() {
