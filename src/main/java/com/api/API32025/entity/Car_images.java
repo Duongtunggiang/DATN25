@@ -1,5 +1,6 @@
 package com.api.API32025.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,7 +15,9 @@ public class Car_images {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id")
+    @JsonBackReference
     private Car car;
+
 
     public Long getId() {
         return id;

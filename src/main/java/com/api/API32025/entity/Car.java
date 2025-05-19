@@ -1,5 +1,7 @@
 package com.api.API32025.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -16,8 +18,8 @@ public class Car {
     @Column(name = "license_plate", nullable = false, unique = true)
     private String licensePlate;
 
-    @Column(name = "brand")
-    private String brand;
+    @Column(name = "car_name", nullable = false)
+    private String carName;
 
     @Column(name = "model")
     private String model;
@@ -35,24 +37,39 @@ public class Car {
     private double pricePerDay;
 
     @Column(name = "status")
-    private String status = "available"; // hoặc rented, maintenance...
+    private String status = "PENDING"; // Xe mới tạo, chờ admin duyệt
+    // - AVAILABLE -- Xe sẵn sàng cho thuê
+    // - BOOKED -- Xe đã có người đặt cọc
+    // - RENTED -- Xe đang được thuê
+    // - INACTIVE -- Xe bị ẩn tạm thời (do chủ xe hoặc hệ thống)
+    // - DELETED -- Xe đã bị xóa mềm (vào thùng rác)
+    // - REJECTED -- Admin từ chối duyệt xe
 
     @Column(name = "image_url")
     private String imageUrl;
 
-    // Liên kết nhiều xe với một chủ xe
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "car_owner_id")
-    private CarOwner carOwner;
+    @JoinColumn(name = "brand_id")
+    @JsonBackReference
+    private Brand brand;
 
     @ManyToMany(mappedBy = "cars")
     private List<Booking> bookings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "car",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Car_images> carImages = new ArrayList<>();
 
     public List<Car_images> getCarImages() {
         return carImages;
+    }
+
+    public String getCarName() {
+        return carName;
+    }
+
+    public void setCarName(String carName) {
+        this.carName = carName;
     }
 
     public void setCarImages(List<Car_images> carImages) {
@@ -74,8 +91,13 @@ public class Car {
     public String getLicensePlate() { return licensePlate; }
     public void setLicensePlate(String licensePlate) { this.licensePlate = licensePlate; }
 
-    public String getBrand() { return brand; }
-    public void setBrand(String brand) { this.brand = brand; }
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(Brand brand) {
+        this.brand = brand;
+    }
 
     public String getModel() { return model; }
     public void setModel(String model) { this.model = model; }
@@ -98,7 +120,6 @@ public class Car {
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public CarOwner getCarOwner() { return carOwner; }
-    public void setCarOwner(CarOwner carOwner) { this.carOwner = carOwner; }
+
 }
 

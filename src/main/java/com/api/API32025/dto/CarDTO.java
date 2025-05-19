@@ -5,16 +5,39 @@ import java.util.List;
 public class CarDTO {
     private Long id;
     private String licensePlate;
-    private String brand;
+    private Long brandId;
+    private Long segmentId;
+    private String carName;
     private String model;
     private int year;
     private String color;
     private int seats;
     private double pricePerDay;
-    private List<String> imagePaths;
+    private String imagePaths;
+    private String status;
 
-    public List<String> getImagePaths() {
+    public String getImagePaths() {
         return imagePaths;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setImagePaths(String imagePaths) {
+        this.imagePaths = imagePaths;
+    }
+
+    public String getCarName() {
+        return carName;
+    }
+
+    public void setCarName(String carName) {
+        this.carName = carName;
     }
 
     public Long getId() {
@@ -25,9 +48,7 @@ public class CarDTO {
         this.id = id;
     }
 
-    public void setImagePaths(List<String> imagePaths) {
-        this.imagePaths = imagePaths;
-    }
+
 
     public String getLicensePlate() {
         return licensePlate;
@@ -37,12 +58,20 @@ public class CarDTO {
         this.licensePlate = licensePlate;
     }
 
-    public String getBrand() {
-        return brand;
+    public Long getBrandId() {
+        return brandId;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
+    public void setBrandId(Long brandId) {
+        this.brandId = brandId;
+    }
+
+    public Long getSegmentId() {
+        return segmentId;
+    }
+
+    public void setSegmentId(Long segmentId) {
+        this.segmentId = segmentId;
     }
 
     public String getModel() {

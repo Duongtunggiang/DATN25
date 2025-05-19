@@ -7,18 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "car_owner")
-public class CarOwner {
+@Table(name = "segment")
+public class Segment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "account_id", nullable = false, unique = true)
-    private Account account;
+    @Column(nullable = false, unique = true)
+    private String name; // ví dụ: A, B, C, D, SUV, MPV...
 
-    @OneToMany(mappedBy = "carOwner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(length = 255)
+    private String description;
+
+    @OneToMany(mappedBy = "segment", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Brand> brands = new ArrayList<>();
 
@@ -26,16 +28,24 @@ public class CarOwner {
         return id;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Account getAccount() {
-        return account;
+    public String getName() {
+        return name;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<Brand> getBrands() {
@@ -46,4 +56,3 @@ public class CarOwner {
         this.brands = brands;
     }
 }
-

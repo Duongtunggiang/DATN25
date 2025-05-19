@@ -33,6 +33,10 @@ public class JwtUtil {
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }
+    public String extractRole(String token) {
+        Claims claims = extractAllClaims(token);
+        return (String) claims.get("role");
+    }
 
     public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
