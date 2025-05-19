@@ -62,7 +62,6 @@ public class AccountService {
         account.setStatus("active");
         account.setRole(role);
 
-        // Tạo profile mặc định
         Profile profile = new Profile();
         profile.setFirstName("");
         profile.setLastName("");
@@ -75,10 +74,9 @@ public class AccountService {
         profile.setAccount(account);
         account.setProfile(profile);
 
-        // Lưu Account trước (để có ID)
         Account savedAccount = accountRepository.save(account);
 
-        // Nếu là CHỦ XE
+        //CHỦ XE
         if ("CAROWNER".equals(role.getRoleName())) {
             CarOwner carOwner = new CarOwner();
             carOwner.setAccount(savedAccount);
@@ -88,7 +86,7 @@ public class AccountService {
             accountRepository.save(savedAccount);
         }
 
-        // Nếu là KHÁCH HÀNG
+        //KHÁCH HÀNG
         if ("CUSTOMER".equals(role.getRoleName())) {
             Customer customer = new Customer();
             customer.setAccount(savedAccount);
@@ -120,7 +118,7 @@ public class AccountService {
                 "id", account.getId(),
                 "username", account.getUsername(),
                 "email", account.getEmail(),
-                "roles", List.of(account.getRole().getRoleName()) // đảm bảo frontend có .includes("CUSTOMER")
+                "roles", List.of(account.getRole().getRoleName())
         ));
 
         return response;
@@ -131,24 +129,20 @@ public class AccountService {
         session.invalidate();
     }
     public void changePassword(ChangePasswordDTO changePasswordDTO) {
-        // Lấy tài khoản hiện tại từ SecurityContext
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // Kiểm tra mật khẩu cũ có đúng không
         if (!passwordEncoder.matches(changePasswordDTO.getOldPassword(), account.getPassword())) {
             throw new RuntimeException("Mật khẩu cũ không đúng!");
         }
 
-        // Kiểm tra mật khẩu mới và xác nhận mật khẩu mới có khớp không
         if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
             throw new RuntimeException("Mật khẩu mới và xác nhận mật khẩu không khớp!");
         }
 
-        // Cập nhật mật khẩu mới
         account.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
         accountRepository.save(account);
 
-        SecurityContextHolder.clearContext(); // log out
+        SecurityContextHolder.clearContext();
     }
 
 }

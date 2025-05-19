@@ -64,7 +64,7 @@ public class SecurityConfig implements WebMvcConfigurer{
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000") // Nếu frontend chạy ở React/Vue trên cổng 3000
+                        .allowedOrigins("http://localhost:3000") //frontend chạy trên cổng 3000
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
@@ -74,7 +74,6 @@ public class SecurityConfig implements WebMvcConfigurer{
     // Tắt
     @Bean
     public UserDetailsService userDetailsService() {
-        // Nếu không có UserDetailsService, Spring sẽ tạo user mặc định
         return new InMemoryUserDetailsManager();
     }
     @Bean

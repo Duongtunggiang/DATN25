@@ -15,7 +15,7 @@ public class Category {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name; // Ví dụ: Sedan, SUV, Hatchback, MPV...
+    private String name;
 
     @Column(name = "category_image")
     private String categoryImage;

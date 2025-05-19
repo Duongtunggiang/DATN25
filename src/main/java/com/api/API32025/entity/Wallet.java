@@ -25,7 +25,6 @@ public class Wallet {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // Liên kết 1-1 với Account
     @OneToOne
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;

@@ -40,7 +40,6 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout() {
-        // Xóa token phía client
         return ResponseEntity.ok("Đã đăng xuất thành công. Token đã được xóa.");
     }
     @PostMapping("/change-password")

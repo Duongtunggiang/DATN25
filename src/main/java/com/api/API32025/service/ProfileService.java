@@ -45,7 +45,7 @@ public class ProfileService {
         profile.setPhoneNumber(profileDTO.getPhoneNumber());
         profile.setAvatarPath(profileDTO.getAvatarPath());
 
-        accountRepository.save(account); // nhờ cascade để save luôn profile
+        accountRepository.save(account);
     }
     @Transactional
     public ProfileDTO getProfileByAccountId(Long accountId) {

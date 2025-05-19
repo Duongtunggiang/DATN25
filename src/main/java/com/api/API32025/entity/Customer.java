@@ -13,12 +13,10 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Liên kết 1-1 với Account (giống CarOwner)
     @OneToOne
     @JoinColumn(name = "account_id", nullable = false, unique = true)
     private Account account;
 
-    // Danh sách các booking của khách
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();
 

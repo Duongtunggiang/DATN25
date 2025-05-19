@@ -16,7 +16,7 @@ public class Brand {
     private Long id;
 
     @Column(nullable = false)
-    private String brandName; // ví dụ: Toyota, Honda...
+    private String brandName;
 
     @ManyToOne
     @JoinColumn(name = "car_owner_id")

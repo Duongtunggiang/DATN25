@@ -27,7 +27,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return account.getEmail(); // hoặc getUsername() nếu bạn login bằng username
+        return account.getEmail();
     }
 
     @Override

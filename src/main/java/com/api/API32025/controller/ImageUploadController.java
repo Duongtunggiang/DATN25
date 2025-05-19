@@ -27,12 +27,12 @@ public class ImageUploadController {
         try {
             String filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             Path folderPath = Paths.get(uploadPath, "avatars");
-            Files.createDirectories(folderPath); // tạo folder nếu chưa có
+            Files.createDirectories(folderPath);
 
             Path filePath = folderPath.resolve(filename);
             Files.write(filePath, file.getBytes());
 
-            String urlPath = "/uploads/avatars/" + filename; // trả về URL dùng để truy cập ảnh
+            String urlPath = "/uploads/avatars/" + filename;
             return ResponseEntity.ok(urlPath);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi upload ảnh");

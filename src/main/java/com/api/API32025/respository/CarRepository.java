@@ -16,7 +16,5 @@ public interface CarRepository extends JpaRepository<Car, Long> {
     //    List<Car> findByCarOwner(CarOwner carOwner);
     Optional<Car> findByLicensePlate(String licensePlate);
 
-
-    // Tìm xe theo License Plate
 //    Car findByLicensePlate(String licensePlate);
 }

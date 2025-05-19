@@ -15,7 +15,6 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Liên kết với xe được thuê
     @ManyToMany
     @JoinTable(
             name = "booking_car",
@@ -24,28 +23,22 @@ public class Booking {
     )
     private List<Car> cars = new ArrayList<>();
 
-    // Người thuê xe (khách hàng)
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    // Ngày đặt xe
     @Column(name = "booking_date")
     private LocalDateTime bookingDate;
 
-    // Ngày bắt đầu thuê
     @Column(name = "start_date")
     private LocalDate startDate;
 
-    // Ngày kết thúc thuê
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    // Tổng tiền thuê
     @Column(name = "total_price")
     private double totalPrice;
 
-    // Feedback của khách hàng
     @Column(name = "feedback_rating")
     private Double numberFeedback;
 

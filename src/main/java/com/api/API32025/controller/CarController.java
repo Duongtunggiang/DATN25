@@ -36,7 +36,6 @@ public class CarController {
         }
     }
 
-    // Thêm xe cho chủ xe
     @PostMapping("/add-car")
     public ResponseEntity<String> addCar(
             @RequestHeader("Authorization") String token,
@@ -85,7 +84,6 @@ public class CarController {
     }
 
 
-    // Lấy danh sách xe của chủ xe
 //    @GetMapping("/owner/{accountId}")
 //    public ResponseEntity<List<Car>> getCarsByOwner(@PathVariable Long accountId) {
 //        try {
@@ -96,7 +94,6 @@ public class CarController {
 //        }
 //    }
 
-    // Cập nhật thông tin xe của chủ xe
     @PutMapping("/update/{carId}")
     public ResponseEntity<String> updateCar(@RequestHeader("Authorization") String token,
                                             @PathVariable Long carId,
@@ -110,7 +107,6 @@ public class CarController {
         }
     }
 
-    // Xóa xe của chủ xe
     @DeleteMapping("/delete/{carId}")
     public ResponseEntity<String> deleteCar(@RequestHeader("Authorization") String token,
                                             @PathVariable Long carId) {
@@ -126,7 +122,6 @@ public class CarController {
         }
     }
 
-    // Lấy danh sách tất cả xe cho trang chủ khách hàng
     @GetMapping("/list")
     public ResponseEntity<List<CarDTO>> getAllCars() {
         try {
@@ -136,7 +131,7 @@ public class CarController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
-    // Lấy chi tiết xe theo id
+
     @GetMapping("/{carId}")
     public ResponseEntity<CarDTO> getCarById(@PathVariable Long carId) {
         try {
@@ -146,7 +141,6 @@ public class CarController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-    // Lấy danh sách xe của chủ xe từ token
 //    @GetMapping("/my-cars")
 //    public ResponseEntity<List<Car>> getMyCars(@RequestHeader("Authorization") String token) {
 //        try {

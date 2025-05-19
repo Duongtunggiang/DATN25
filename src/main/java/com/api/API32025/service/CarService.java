@@ -132,7 +132,7 @@ public class CarService {
         List<Brand> brands = brandRepository.findByCarOwner(carOwner);
 
         List<Car> cars = brands.stream()
-                .flatMap(brand -> brand.getCars().stream())  // brand.getCars() là List<Car>
+                .flatMap(brand -> brand.getCars().stream())
                 .collect(Collectors.toList());
 
         return cars.stream().map(car -> {
@@ -165,7 +165,6 @@ public class CarService {
         }).collect(Collectors.toList());
     }
 
-    //Khi cần lấy brand name của xe:
     //Car car = carRepository.findById(id).orElseThrow(...);
     //String brandName = car.getSegment().getBrand().getBrandName();
 //    public List<Car> getCarsByOwner(Long accountId) {
@@ -198,13 +197,11 @@ public class CarService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy xe"));
 
         if ("ROLE_ADMIN".equals(role)) {
-            // Admin được phép xóa bất kỳ xe nào
             car.setStatus("DELETED");
             carRepository.save(car);
             return;
         }
 
-        // Người dùng thường phải kiểm tra quyền sở hữu
         CarOwner carOwner = carOwnerRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy chủ xe"));
 

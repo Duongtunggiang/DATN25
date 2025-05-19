@@ -17,7 +17,7 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    private final String SECRET = "9f4bC6e8!gBv2tJmLxWqYzPlRkVuXyZq"; // đúng 32 bytes
+    private final String SECRET = "9f4bC6e8!gBv2tJmLxWqYzPlRkVuXyZq";
     private final Key SECRET_KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
     public String generateToken(Account account) {

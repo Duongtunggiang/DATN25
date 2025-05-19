@@ -3,11 +3,11 @@ package com.api.API32025.dto;
 public class ProfileDTO {
     private String firstName;
     private String lastName;
-    private String dateOfBirth; // truyền dạng chuỗi yyyy-MM-dd
+    private String dateOfBirth;
     private String nationalId;
     private String drivingLicense;
     private String phoneNumber;
-    private String avatarPath; // đường dẫn ảnh
+    private String avatarPath;
 
     private  String username;
     private String email;

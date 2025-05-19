@@ -33,13 +33,12 @@ public class DataInitializer implements CommandLineRunner {
                 segmentRepository.save(segment);
             }
         }
-        // Khởi tạo category với hình ảnh tương ứng
         List<String> categoryNames = Arrays.asList("Sedan", "SUV", "Hatchback", "MPV");
         for (String name : categoryNames) {
             if (!categoryRepository.existsByName(name)) {
                 Category category = new Category();
                 category.setName(name);
-                category.setCategoryImage(getImagePath(name)); // Gán đường dẫn ảnh
+                category.setCategoryImage(getImagePath(name));
                 categoryRepository.save(category);
             }
         }
