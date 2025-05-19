@@ -56,7 +56,7 @@ const HomeCom = () => {
                     <a href="/dang-ky-chu-xe" className=' btn btn-warning'> Đăng ký cho thuê xe</a>
                 </div>
             )}
-
+            <a href="/chat">Chat with AI</a>
             {toastMessage && <ToastNotification message={toastMessage} onClose={() => setToastMessage('')} />}
         </div>
     );

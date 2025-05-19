@@ -57,11 +57,14 @@ const LoginComponent = () => {
 
         login(user); // Cập nhật context
 
-        if (user.roles.includes('CUSTOMER')) {
-            navigate('/');
-        } else {
+        if (user.roles.includes('ADMIN')) {
+            navigate('/admin');
+        } else if (user.roles.includes('CAROWNER')) {
             navigate('/home-xe');
+        } else {
+            navigate('/');
         }
+
 
     } catch (error) {
         // Kiểm tra loại lỗi trả về

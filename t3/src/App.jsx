@@ -11,6 +11,10 @@ import HomeXeComp from './Component/HomeXeComp';
 import ThemXe from './Component/ThemXe';
 import ChiTietXe from './Component/ChiTietXe';
 import { AuthProvider } from './Authen/AuthContext';
+import ChatPopup from './Component/ChatGroup';
+import AddCarPage from './Component/AddCarPage';
+import BinXe from './Component/BinXe';
+import AdminDashboard from './Component/AdminDashboard';
 
 function App() {
   return (
@@ -22,8 +26,12 @@ function App() {
         <Route path="/dang-ky" element={<RegisterComponent/>}/>
         <Route path="/dang-ky-chu-xe" element={<RegisCarOwner/>}/>
         <Route path='/home-xe' element={<HomeXeComp/>}/>
-        <Route path='/them-xe' element={<ThemXe />} />
+        <Route path='/them-xe' element={<AddCarPage />} />
         <Route path='/chi-tiet-xe/:carId' element={<ChiTietXe />} />
+        <Route path='/chat' element={<ChatPopup/>}/>
+        <Route path="/thung-rac" element={<BinXe />} />
+        <Route path='/admin' element={<AdminDashboard/>}/>
+
 
         
         {/* Bọc đường dẫn cần bảo vệ trong PrivateRoute */}

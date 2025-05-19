@@ -1,0 +1,19 @@
+.category-card {
+  width: 140px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+}
+
+.category-card:hover {
+  box-shadow: 0 0 10px rgba(0, 200, 83, 0.6);
+  transform: scale(1.02);
+}
+
+.category-card.selected {
+  border-color: #4caf50;
+  background-color: #e8f5e9;
+}

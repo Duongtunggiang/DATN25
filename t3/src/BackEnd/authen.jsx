@@ -1,48 +1,37 @@
-import axios from 'axios';
-import React from 'react'
 import axiosInstance from '../Authen/axiosInstance';
-const API_URL = 'http://localhost:8080';
 
+// LOGIN
 export const LoginAccount = async (user) => {
-  const response = await axios.post(`${API_URL}/api/auth/login`, user);
+  const response = await axiosInstance.post('/api/auth/login', user);
   const { token } = response.data;
-  localStorage.setItem('token', token); // Lưu token
+  localStorage.setItem('token', token);
   return response.data;
 };
 
-  
-  // Gọi API đăng ký
-
-
+// REGISTER
 export const RegisterAccount = async (user) => {
   const response = await axiosInstance.post('/api/auth/register', user);
   return response.data;
 };
 
-  
-  //Gọi API đăng xuất
- export const LogoutAccount = async () => {
+// LOGOUT
+export const LogoutAccount = async () => {
   localStorage.removeItem('token');
 };
 
-  
+// GET PROFILE
 export const GetProfile = async () => {
-  const token = localStorage.getItem('token');
-  const response = await axios.get(`${API_URL}/api/profile`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  const response = await axiosInstance.get('/api/profile');
   return response.data;
 };
 
+// UPDATE PROFILE
+export const UpdateProfile = async (data) => {
+  const response = await axiosInstance.put('/api/profile/update', data);
+  return response.data;
+};
 
-  
-export async function UpdateProfile(data) {
-  return axiosInstance.put('/api/profile/update', data).then(res => res.data);
-}
-
-
+// UPLOAD FILE
 export const UploadFile = async (formData) => {
   const response = await axiosInstance.post('/api/upload', formData, {
     headers: {
@@ -52,74 +41,88 @@ export const UploadFile = async (formData) => {
   return response.data;
 };
 
+// FETCH PROFILE (có withCredentials, giữ lại nếu backend yêu cầu cookie)
 export const fetchProfile = async () => {
-  const response = await axios.get('http://localhost:8080/api/profile', {
+  const response = await axiosInstance.get('/api/profile', {
     withCredentials: true
   });
   return response.data;
 };
 
-
+// CHANGE PASSWORD
 export const ChangePassword = async (formData) => {
   const response = await axiosInstance.post('/api/auth/change-password', formData);
   return response.data;
 };
 
-// Carowner
-// API để thêm xe
+// CARS
 export const addCar = async (carData) => {
-  const token = localStorage.getItem('token');
-  const response = await axios.post('http://localhost:8080/api/cars/add', carData, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+  // const token = localStorage.getItem('token');
+  const response = await axiosInstance.post('/api/cars/add-car', carData);
+  return response.data;
+};
+// Trong authen.jsx
+export const addBrand = async ({ brandName, categoryId, segmentId }) => {
+  const response = await axiosInstance.post('/api/cars/add-brand', {
+    brandName,
+    categoryId,
+    segmentId
   });
+  return response.data;
+};
 
+export const getBrandForCar = async (carId) => {
+  const response = await axiosInstance.get(`/api/brand/car/${carId}`);
   return response.data;
 };
 
 export const getCarById = async (carId) => {
-  const token = localStorage.getItem('token');
-  const response = await axios.get(`http://localhost:8080/api/cars/${carId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  const response = await axiosInstance.get(`/api/cars/${carId}`);
   return response.data;
 };
-
-
 
 export const getCars = async () => {
-  const token = localStorage.getItem('token');
-  const response = await axios.get('http://localhost:8080/api/cars/list', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  const response = await axiosInstance.get('/api/cars/list');
   return response.data;
 };
 
-
+export const getMyCars = async () => {
+  const response = await axiosInstance.get('/api/cars/my-cars');
+  return response.data;
+};
 
 export const updateCar = async (carId, carData) => {
-  const token = localStorage.getItem('token');
-  const response = await axios.put(`http://localhost:8080/api/cars/update/${carId}`, carData, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  const response = await axiosInstance.put(`/api/cars/update/${carId}`, carData);
   return response.data;
 };
-
 
 export const deleteCar = async (carId) => {
-  const token = localStorage.getItem('token');
-  const response = await axios.delete(`http://localhost:8080/api/cars/delete/${carId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  const response = await axiosInstance.delete(`/api/cars/delete/${carId}`);
   return response.data;
 };
 
+export const getAllbrand = async () =>{
+  const response = await axiosInstance.get('/api/brand/all');
+  return response.data;
+}
+
+export const getAllSegment = async ()=>{
+  const response = await axiosInstance.get('/api/segments');
+  return response.data;
+}
+
+export const getAllCategory = async () => {
+  const response = await axiosInstance.get('/api/categories');
+  return response.data;
+}
+
+// CHATBOT
+export const sendChatMessage = async (message) => {
+  const response = await axiosInstance.post('/api/chatbot/ask', { message });
+  return response.data;
+};
+
+export const getChatMessages = async () => {
+  const response = await axiosInstance.get('/api/chatbot/messages');
+  return response.data;
+};
