@@ -55,6 +55,40 @@ export const ChangePassword = async (formData) => {
   return response.data;
 };
 
+//Check CCCD ID
+export const checkNationalId = async (nationalId) => {
+  try {
+    const response = await axiosInstance.get('/api/profile/check-nationalId', {
+      params: { nationalId }
+    });
+    return response.data; 
+  } catch (error) {
+    console.error('Lỗi kiểm tra CCCD:', error);
+    throw error;
+  }
+};
+
+//Wallet 
+
+export const getWalletBalance = async () => {
+  const response = await axiosInstance.get('/api/wallet/balance');
+  return response.data;
+};
+
+export const getTransactionHistory = async () => {
+  const response = await axiosInstance.get('/api/wallet/transactions');
+  return response.data;
+};
+
+export const depositMoney = async (amount) => {
+  await axiosInstance.post('/api/wallet/deposit', { amount }); // gửi JSON body
+};
+
+export const withdrawMoney = async (amount) => {
+  await axiosInstance.post('/api/wallet/withdraw', { amount }); // tương tự
+};
+
+
 // CARS
 export const addCar = async (carData) => {
   // const token = localStorage.getItem('token');

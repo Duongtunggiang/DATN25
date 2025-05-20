@@ -15,6 +15,8 @@ import ChatPopup from './Component/ChatGroup';
 import AddCarPage from './Component/AddCarPage';
 import BinXe from './Component/BinXe';
 import AdminDashboard from './Component/AdminDashboard';
+import WalletComponent from './Component/WalletComponent';
+import VnPayComponent from './Component/VnPayComponent';
 
 function App() {
   return (
@@ -39,6 +41,8 @@ function App() {
           <Route path="/profile" element={<ProfileComponent />} />
           <Route path='/edit-profile' element={<EditProfile/>}/>
           <Route path='/change-password' element={<ChangePasswordComponent/>}/>
+          <Route path='/vi-tien' element={<WalletComponent />} />
+          <Route path='/vn-pay' element={<VnPayComponent />}/>
         </Route>
       </Routes>
       </AuthProvider>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { GetProfile } from '../BackEnd/authen';
+import { GetProfile, getWalletBalance } from '../BackEnd/authen';
 
 
 const ProfileComponent = () => {
@@ -9,7 +9,8 @@ const ProfileComponent = () => {
     const fetchData = async () => {
       try {
         const data = await GetProfile();
-        setProfile(data);
+        const walletData = await getWalletBalance();
+        setProfile({ ...data, wallet: walletData.balance });
       } catch (error) {
         console.error("Lỗi khi lấy thông tin người dùng:", error);
       }
@@ -17,6 +18,7 @@ const ProfileComponent = () => {
 
     fetchData();
   }, []);
+
 
   if (!profile) {
     return <div className="text-center mt-5">Đang tải thông tin...</div>;
@@ -41,7 +43,7 @@ const ProfileComponent = () => {
     }
   };
   const role = getRoleFromToken();
-
+  
   return (
     <div className="container mt-5">
       <div className="card shadow-lg p-4">

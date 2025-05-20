@@ -115,7 +115,7 @@ function HomeXeComp() {
           </div>
         ))}
       </div>
-
+        <a href="/vi-tien" className="btn btn-info me-2">Ví tiền</a>
       {toastMessage && (
         <ToastNotification message={toastMessage} onClose={() => setToastMessage('')} />
       )}
