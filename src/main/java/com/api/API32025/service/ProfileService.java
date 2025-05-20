@@ -4,6 +4,7 @@ import com.api.API32025.dto.ProfileDTO;
 import com.api.API32025.entity.Account;
 import com.api.API32025.entity.Profile;
 import com.api.API32025.respository.AccountRepository;
+import com.api.API32025.respository.ProfileRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class ProfileService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private ProfileRepository profileRepository;
 
     public void updateProfile(Long accountId, ProfileDTO profileDTO) {
         Optional<Account> optionalAccount = accountRepository.findById(accountId);
@@ -77,5 +81,9 @@ public class ProfileService {
 
         return dto;
     }
+    public boolean isNationalIdExistForOtherAccount(String nationalId, Long currentAccountId) {
+        return profileRepository.existsByNationalIdAndAccountIdNot(nationalId, currentAccountId);
+    }
+
 }
 

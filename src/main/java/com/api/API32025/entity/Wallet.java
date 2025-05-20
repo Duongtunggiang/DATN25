@@ -1,5 +1,7 @@
 package com.api.API32025.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -29,7 +31,27 @@ public class Wallet {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Transaction> transactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VnPayTransaction> vnPayTransactions = new ArrayList<>();
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public List<VnPayTransaction> getVnPayTransactions() {
+        return vnPayTransactions;
+    }
+
+    public void setVnPayTransactions(List<VnPayTransaction> vnPayTransactions) {
+        this.vnPayTransactions = vnPayTransactions;
+    }
 
     public List<Transaction> getTransactions() {
         return transactions;

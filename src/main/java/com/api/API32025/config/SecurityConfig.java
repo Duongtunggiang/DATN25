@@ -50,6 +50,9 @@ public class SecurityConfig implements WebMvcConfigurer{
                         .requestMatchers("/api/brand/**").permitAll()
                         .requestMatchers("/api/cars/**").hasAuthority("CAROWNER")
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/wallet/**").hasAnyAuthority("CUSTOMER","CAROWNER")
+                        .requestMatchers("/api/vnpay/return").permitAll()
+                        .requestMatchers("/api/vnpay/**").hasAnyAuthority("CUSTOMER","CAROWNER")
 
                         .anyRequest().authenticated()
                 )

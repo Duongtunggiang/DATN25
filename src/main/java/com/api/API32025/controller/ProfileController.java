@@ -67,6 +67,13 @@ public class ProfileController {
         profileService.updateProfile(accountId, profileDTO);
         return ResponseEntity.ok("Cập nhật thông tin cá nhân thành công!");
     }
+    @GetMapping("/check-nationalId")
+    public ResponseEntity<?> checkNationalIdExists(@RequestParam String nationalId, Authentication auth) {
+        Long accountId = ((Account) auth.getPrincipal()).getId();
+
+        boolean exists = profileService.isNationalIdExistForOtherAccount(nationalId, accountId);
+        return ResponseEntity.ok(exists);
+    }
 
 
 

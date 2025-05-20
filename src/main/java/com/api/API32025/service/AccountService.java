@@ -5,10 +5,7 @@ import com.api.API32025.dto.LoginDTO;
 import com.api.API32025.dto.RegisterDTO;
 import com.api.API32025.entity.*;
 import com.api.API32025.jwt.JwtUtil;
-import com.api.API32025.respository.AccountRepository;
-import com.api.API32025.respository.CarOwnerRepository;
-import com.api.API32025.respository.CustomerRepository;
-import com.api.API32025.respository.RoleRepository;
+import com.api.API32025.respository.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,9 +14,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.api.API32025.entity.Transaction.TransactionType.DEPOSIT;
 
 @Service
 public class AccountService {
@@ -40,6 +40,9 @@ public class AccountService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private WalletRepository walletRepository;
 
     public String register(RegisterDTO registerDTO) {
         if (accountRepository.findByEmail(registerDTO.getEmail()) != null) {
@@ -73,6 +76,24 @@ public class AccountService {
         profile.setAvatarPath("/Images/avatars/default-avatar.png");
         profile.setAccount(account);
         account.setProfile(profile);
+
+        Wallet wallet = new Wallet();
+        wallet.setAccount(account);
+        wallet.setBalance(0);
+        wallet.setCurrency("VND");
+        wallet.setStatus("ACTIVE");
+        wallet.setCreatedAt(LocalDateTime.now());
+
+        Transaction transaction = new Transaction();
+        transaction.setWallet(wallet);
+        transaction.setAmount(0);
+        transaction.setType(null);
+        transaction.setTransactionTime(LocalDateTime.now());
+        transaction.setDescription("Khởi tạo ví khi đăng ký tài khoản");
+
+        wallet.getTransactions().add(transaction);
+
+        account.setWallet(wallet);
 
         Account savedAccount = accountRepository.save(account);
 

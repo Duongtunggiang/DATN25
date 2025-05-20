@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findByWalletOrderByTransactionTimeDesc(Wallet wallet);
+    List<Transaction> findByWallet(Wallet wallet);
 }
 
