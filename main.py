@@ -6,6 +6,7 @@ from PIL import Image
 import io
 import re
 import mysql.connector
+from ocr_utils import extract_info_from_image
 
 # ---------- CẤU HÌNH ----------
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -40,25 +41,6 @@ def get_car_data_from_db(brand):
     conn.close()
     return result
 
-# ---------- HÀM HỖ TRỢ OCR ----------
-def extract_info_from_image(image_bytes):
-    image = Image.open(io.BytesIO(image_bytes))
-    open_cv_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-    text = pytesseract.image_to_string(open_cv_image, lang='eng+vie')
-
-    info = {
-        "raw_text": text,
-        "name": None,
-        "cccd": None,
-        "dob": None
-    }
-
-    match = re.search(r'\d{12}', text)
-    if match:
-        info['cccd'] = match.group()
-
-    return info
-
 # ---------- API OCR ----------
 @app.route("/api/ocr", methods=["POST"])
 def ocr_cccd():
@@ -70,8 +52,10 @@ def ocr_cccd():
 
     try:
         info = extract_info_from_image(image_bytes)
+        print("OCR Result:", info)  # Debug log
         return jsonify(info)
     except Exception as e:
+        print("OCR Error:", str(e))  # Debug log
         return jsonify({"error": str(e)}), 500
 
 # ---------- API CHATBOT ----------
