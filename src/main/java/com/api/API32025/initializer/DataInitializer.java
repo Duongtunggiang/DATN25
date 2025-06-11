@@ -20,10 +20,9 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private CategoryRepository categoryRepository;
 
-
     @Override
     public void run(String... args) throws Exception {
-        // Khởi tạo segment
+        // Initialize segments
         List<String> segmentNames = Arrays.asList("A", "B", "C", "D");
         for (String name : segmentNames) {
             if (!segmentRepository.existsByName(name)) {
@@ -31,8 +30,13 @@ public class DataInitializer implements CommandLineRunner {
                 segment.setName(name);
                 segment.setDescription(getDescription(name));
                 segmentRepository.save(segment);
+                System.out.println("Created segment: " + name);
+            } else {
+                System.out.println("Segment already exists: " + name);
             }
         }
+
+        // Initialize categories
         List<String> categoryNames = Arrays.asList("Sedan", "SUV", "Hatchback", "MPV");
         for (String name : categoryNames) {
             if (!categoryRepository.existsByName(name)) {
@@ -40,6 +44,9 @@ public class DataInitializer implements CommandLineRunner {
                 category.setName(name);
                 category.setCategoryImage(getImagePath(name));
                 categoryRepository.save(category);
+                System.out.println("Created category: " + name);
+            } else {
+                System.out.println("Category already exists: " + name);
             }
         }
     }

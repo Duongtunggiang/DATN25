@@ -26,12 +26,19 @@ public class SecurityConfig implements WebMvcConfigurer{
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-                .addResourceHandler("/uploads/**")
+                .addResourceHandler("/Images/uploads/**")
                 .addResourceLocations("file:" + uploadPath + "/");
         registry
                 .addResourceHandler("/Images/**")
                 .addResourceLocations("file:" + uploadPath + "/");
+        registry
+                .addResourceHandler("/Images/uploads/**")
+                .addResourceLocations("file:Images/uploads/");
+        registry
+                .addResourceHandler("/Images/**")
+                .addResourceLocations("file:Images/");
 
+                
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
@@ -49,6 +56,14 @@ public class SecurityConfig implements WebMvcConfigurer{
                         .requestMatchers("/api/segments/**").permitAll()
                         .requestMatchers("/api/brand/**").permitAll()
                         .requestMatchers("/api/cars/**").hasAuthority("CAROWNER")
+                        .requestMatchers("/api/customer/**").hasAuthority("CUSTOMER")
+                        .requestMatchers("/api/guest/**").permitAll()
+                        .requestMatchers("/api/bookings/**").hasAnyAuthority("CUSTOMER","CAROWNER")
+                        .requestMatchers("/api/favorites/**").hasAnyAuthority("CUSTOMER","CAROWNER")
+
+                        .requestMatchers("/api/chats/**").hasAnyAuthority("CUSTOMER","CAROWNER","ADMIN")
+
+                        .requestMatchers("/api/ocr/**").hasAnyAuthority("CUSTOMER","CAROWNER")
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/wallet/**").hasAnyAuthority("CUSTOMER","CAROWNER")
                         .requestMatchers("/api/vnpay/return").permitAll()

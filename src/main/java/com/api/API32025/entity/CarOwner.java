@@ -20,7 +20,19 @@ public class CarOwner {
 
     @OneToMany(mappedBy = "carOwner", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Brand> brands = new ArrayList<>();
+    private List<Car> cars = new ArrayList<>();
+
+    @OneToMany(mappedBy = "carOwner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Chat> chats = new ArrayList<>();
+
+    public List<Car> getCars() {
+        return cars;
+    }
+
+    public void setCars(List<Car> cars) {
+        this.cars = cars;
+    }
 
     public Long getId() {
         return id;
@@ -38,12 +50,12 @@ public class CarOwner {
         this.account = account;
     }
 
-    public List<Brand> getBrands() {
-        return brands;
+    public List<Car> getBrands() {
+        return cars;
     }
 
-    public void setBrands(List<Brand> brands) {
-        this.brands = brands;
+    public void setBrands(List<Car> brands) {
+        this.cars = brands;
     }
 }
 

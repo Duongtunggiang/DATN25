@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,7 +27,20 @@ public class Account implements UserDetails {
     private String password;
 
     @Column(name = "status", nullable = false)
-    private String status = "active";
+    private AccountStatus status = AccountStatus.PENDING;
+
+    @Column(name = "verification_token")
+    private String verificationToken;
+
+    @Column(name = "verification_token_expiry")
+    private LocalDateTime verificationTokenExpiry;
+
+    public enum AccountStatus{
+        PENDING, // 0 -- Chờ xác thực
+        VERIFY,  // 1 -- Đã xác thực Email
+        ACTIVE, // 2 -- Đã xác thực
+        BLOCK // 3 -- Khóa tài khoản
+    }
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
@@ -40,6 +54,7 @@ public class Account implements UserDetails {
     private CarOwner carOwner;
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private Customer customer;
+
 
     public Customer getCustomer() {
         return customer;
@@ -64,7 +79,7 @@ public class Account implements UserDetails {
         this.profile = profile;
     }
 
-    public Account(Long id, String username, String email, String password, String status, Role role, Profile profile, Wallet wallet) {
+    public Account(Long id, String username, String email, String password, AccountStatus status, Role role, Profile profile, Wallet wallet, CarOwner carOwner, Customer customer) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -73,6 +88,8 @@ public class Account implements UserDetails {
         this.role = role;
         this.profile = profile;
         this.wallet = wallet;
+        this.carOwner = carOwner;
+        this.customer = customer;
     }
 // Implement UserDetails interface
 
@@ -109,15 +126,15 @@ public class Account implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return "active".equals(status);  // Kiểm tra trạng thái tài khoản (active hoặc không)
+        return status == AccountStatus.ACTIVE;
     }
     public Account(){}
 
-    public String getStatus() {
+    public AccountStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AccountStatus status) {
         this.status = status;
     }
 
@@ -159,5 +176,21 @@ public class Account implements UserDetails {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    public LocalDateTime getVerificationTokenExpiry() {
+        return verificationTokenExpiry;
+    }
+
+    public void setVerificationTokenExpiry(LocalDateTime verificationTokenExpiry) {
+        this.verificationTokenExpiry = verificationTokenExpiry;
     }
 }

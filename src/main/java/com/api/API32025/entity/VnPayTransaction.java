@@ -1,28 +1,48 @@
 package com.api.API32025.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "vn_pay_transaction")
+@Data
+@Table(name = "vnpay_transactions")
 public class VnPayTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String vnpTxnRef; // Mã tham chiếu giao dịch VN Pay
-    private String vnpResponseCode; // Mã phản hồi
-    private int amount; // Số tiền giao dịch
+    @Column(unique = true)
+    private String vnpTxnRef;
+
+    private String vnpResponseCode;
+    private int amount;
     private String orderInfo;
     private LocalDateTime transactionTime;
-    private String status; // SUCCESS, FAILED, PENDING
+    private boolean processed;
+    private String status;
+    private Long bookingId;
 
     @ManyToOne
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
-    @Column(name = "processed")
-    private boolean processed;
+
+    @OneToMany(mappedBy = "vnPayTransaction", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Booking> bookings = new ArrayList<>();
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
 
     public boolean isProcessed() {
         return processed;
@@ -31,7 +51,6 @@ public class VnPayTransaction {
     public void setProcessed(boolean processed) {
         this.processed = processed;
     }
-
 
     public VnPayTransaction() {
     }

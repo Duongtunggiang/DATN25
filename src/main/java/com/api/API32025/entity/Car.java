@@ -1,12 +1,17 @@
 package com.api.API32025.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "car")
 public class Car {
@@ -37,22 +42,52 @@ public class Car {
     private double pricePerDay;
 
     @Column(name = "status")
-    private String status = "PENDING"; // Xe mới tạo, chờ admin duyệt
-    // - AVAILABLE -- Xe sẵn sàng cho thuê
-    // - BOOKED -- Xe đã có người đặt cọc
-    // - RENTED -- Xe đang được thuê
-    // - INACTIVE -- Xe bị ẩn tạm thời (do chủ xe hoặc hệ thống)
-    // - DELETED -- Xe đã bị xóa mềm (vào thùng rác)
-    // - REJECTED -- Admin từ chối duyệt xe
+    private CarStatus status ;
+    // 0- PENDING -- Xe mới tạo, chờ admin duyệt
+    // 1- AVAILABLE -- Xe sẵn sàng cho thuê
+    // 2- DEPOSIT -- Xe đã được cọc
+    // 3- BOOKED -- Xe đã có người thuê
+    // 4- DELIVERING -- Xe đang được giao
+    // 5- RENTED -- Xe đang được thuê
+    // 6- RETURNED -- Xe đã trả
+    // 7- INACTIVE -- Xe bị ẩn tạm thời (do chủ xe hoặc hệ thống)
+    // 8- DELETED -- Xe đã bị xóa mềm (vào thùng rác)
+    // 9- REJECTED -- Admin từ chối duyệt xe
+    // 10- CANCEL -- Đã hủy đơn - xe
+    // 11- REFUND -- Đã hoàn tiền đơn hàng
+    // 12- CANCELPENDING -- Hủy đơn hàng khi chờ thanh toán
+    // 13- FEEDBACK -- Đã feed back
+
+    public enum CarStatus{
+        PENDING,AVAILABLE,DEPOSIT,BOOKED,DELIVERING,RENTED,RETURNED,INACTIVE,DELETED,REJECTED,CANCEL,REFUND,CANCELPENDING, FEEDBACK
+    }
 
     @Column(name = "image_url")
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "brand_id")
+    @Column(name="fuel")
+    private String fuel; // Nhien lieu
+
+    @Column(name = "transmission")
+    private Transmission transmission; //Hop so
+    public enum Transmission{
+        AUTOMATIC, MANUAL,CVT,DTC
+    }
+
+    @Column(name = "address")
+    private String address;
+
+    @ManyToOne
+    @JoinColumn(name = "car_owner_id")
     @JsonBackReference
+    private CarOwner carOwner;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "brand_id")
     private Brand brand;
 
+    @JsonBackReference
+    @JsonIgnore
     @ManyToMany(mappedBy = "cars")
     private List<Booking> bookings = new ArrayList<>();
 
@@ -60,66 +95,20 @@ public class Car {
     @JsonManagedReference
     private List<Car_images> carImages = new ArrayList<>();
 
-    public List<Car_images> getCarImages() {
-        return carImages;
-    }
+    @OneToOne(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private CarDetail carDetail;
 
-    public String getCarName() {
-        return carName;
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    public void setCarName(String carName) {
-        this.carName = carName;
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "segment_id")
+    private Segment segment;
 
-    public void setCarImages(List<Car_images> carImages) {
-        this.carImages = carImages;
-    }
-
-    // Getters và Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
-
-    public String getLicensePlate() { return licensePlate; }
-    public void setLicensePlate(String licensePlate) { this.licensePlate = licensePlate; }
-
-    public Brand getBrand() {
-        return brand;
-    }
-
-    public void setBrand(Brand brand) {
-        this.brand = brand;
-    }
-
-    public String getModel() { return model; }
-    public void setModel(String model) { this.model = model; }
-
-    public int getYear() { return year; }
-    public void setYear(int year) { this.year = year; }
-
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
-
-    public int getSeats() { return seats; }
-    public void setSeats(int seats) { this.seats = seats; }
-
-    public double getPricePerDay() { return pricePerDay; }
-    public void setPricePerDay(double pricePerDay) { this.pricePerDay = pricePerDay; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-
-
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<FavoriteCar> favoriteCars = new ArrayList<>();
 }
 

@@ -1,19 +1,13 @@
 package com.api.API32025.service;
 
 import com.api.API32025.config.VnPayConfig;
-import com.api.API32025.dto.PaymentResDTO;
-import com.api.API32025.dto.QueryRequest;
-import com.api.API32025.dto.RefundRequest;
-import com.api.API32025.entity.Account;
-import com.api.API32025.entity.Transaction;
-import com.api.API32025.entity.VnPayTransaction;
-import com.api.API32025.entity.Wallet;
+import com.api.API32025.dto.wallet.QueryRequest;
+import com.api.API32025.dto.wallet.RefundRequest;
+import com.api.API32025.entity.*;
 import com.api.API32025.jwt.JwtUtil;
-import com.api.API32025.respository.AccountRepository;
-import com.api.API32025.respository.TransactionRepository;
-import com.api.API32025.respository.VnPayTransactionRepository;
-import com.api.API32025.respository.WalletRepository;
+import com.api.API32025.respository.*;
 import com.google.gson.Gson;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -28,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class VnPayService {
@@ -50,6 +45,15 @@ public class VnPayService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
+
+    @Autowired
+    private  CarRepository carRepository;
+
+    @Autowired
+    private WalletService walletService;
 
     public String createPaymentUrl(Long accountid,int amount, String bankCode, String locale, String clientIp) {
         Map<String, String> vnp_Params = new TreeMap<>();
@@ -238,6 +242,124 @@ public class VnPayService {
         transactionRepository.save(history);
 
         transaction.setProcessed(true);
+        vnPayTransactionRepository.save(transaction);
+    }
+
+    public String createVnPayBooking(Long accountId, Long bookingId, int amount, String bankCode, String locale, String clientIp) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
+
+        Map<String, String> vnp_Params = new TreeMap<>();
+        vnp_Params.put("vnp_Version", "2.1.0");
+        vnp_Params.put("vnp_Command", "pay");
+        vnp_Params.put("vnp_TmnCode", config.vnp_TmnCode);
+        vnp_Params.put("vnp_Amount", String.valueOf(amount * 100));
+        vnp_Params.put("vnp_CurrCode", "VND");
+
+        String txnRef = "BOOK" + config.getRandomNumber(6); // Thêm tiền tố BOOK để phân biệt
+        vnp_Params.put("vnp_TxnRef", txnRef);
+        vnp_Params.put("vnp_OrderInfo", "Thanh toan don dat xe: " + bookingId);
+        vnp_Params.put("vnp_OrderType", "car_booking");
+        vnp_Params.put("vnp_Locale", (locale != null) ? locale : "vn");
+        vnp_Params.put("vnp_ReturnUrl", config.vnp_ReturnUrl + "?type=booking");
+        vnp_Params.put("vnp_IpAddr", clientIp);
+
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        vnp_Params.put("vnp_CreateDate", now.format(formatter));
+        vnp_Params.put("vnp_ExpireDate", now.plusMinutes(15).format(formatter));
+
+        if (bankCode != null && !bankCode.isEmpty()) {
+            vnp_Params.put("vnp_BankCode", bankCode);
+        }
+
+        // Lưu thông tin giao dịch
+        VnPayTransaction transaction = new VnPayTransaction();
+        transaction.setVnpTxnRef(txnRef);
+        transaction.setAmount(amount);
+        transaction.setProcessed(false);
+        transaction.setTransactionTime(LocalDateTime.now());
+        transaction.setOrderInfo("BOOKING_" + bookingId); // Thêm prefix để phân biệt
+        transaction.setBookingId(bookingId); // Thêm bookingId
+        vnPayTransactionRepository.save(transaction);
+
+        // Build query string
+        List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
+        Collections.sort(fieldNames);
+        StringBuilder hashData = new StringBuilder();
+        StringBuilder query = new StringBuilder();
+        
+        for (String fieldName : fieldNames) {
+            String fieldValue = vnp_Params.get(fieldName);
+            if (fieldValue != null && !fieldValue.isEmpty()) {
+                hashData.append(fieldName).append('=')
+                        .append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+                query.append(fieldName).append('=')
+                        .append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+                
+                if (fieldNames.indexOf(fieldName) < fieldNames.size() - 1) {
+                    hashData.append('&');
+                    query.append('&');
+                }
+            }
+        }
+
+        String vnp_SecureHash = hmacSHA512(config.secretKey, hashData.toString());
+        return config.vnp_PayUrl + "?" + query + "&vnp_SecureHash=" + vnp_SecureHash;
+    }
+
+    @Transactional
+    public void processVnPayBookingCallback(Map<String, String> params) {
+        String vnpTxnRef = params.get("vnp_TxnRef");
+        String vnpResponseCode = params.get("vnp_ResponseCode");
+        String orderInfo = params.get("vnp_OrderInfo");
+
+        // Kiểm tra xem có phải giao dịch booking không
+        if (!vnpTxnRef.startsWith("BOOK")) {
+            return;
+        }
+
+        VnPayTransaction transaction = vnPayTransactionRepository.findByVnpTxnRef(vnpTxnRef)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy giao dịch"));
+
+        if (transaction.isProcessed()) {
+            return; // Tránh xử lý lại giao dịch đã hoàn thành
+        }
+
+        // Nếu thanh toán thành công
+        if ("00".equals(vnpResponseCode)) {
+            Long bookingId = transaction.getBookingId();
+            Booking booking = bookingRepository.findById(bookingId)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn đặt xe"));
+
+            // Transfer money to car owner's wallet
+            Car firstCar = booking.getCars().get(0);
+            CarOwner carOwner = firstCar.getCarOwner();
+            Account ownerAccount = carOwner.getAccount();
+            Customer customer = booking.getCustomer();
+            
+            String description = String.format("Nhận tiền đặt xe %s từ %s qua VNPAY", 
+                booking.getCars().stream()
+                    .map(Car::getLicensePlate)
+                    .collect(Collectors.joining(", ")),
+                customer.getAccount().getProfile().getFirstName());
+            
+            walletService.deposit(ownerAccount.getId(), transaction.getAmount(), description);
+
+            // Cập nhật trạng thái booking
+            booking.setStatus(Car.CarStatus.DEPOSIT);
+            booking.getCars().forEach(c -> {
+                c.setStatus(Car.CarStatus.DEPOSIT);
+                carRepository.save(c);
+            });
+            booking.setPaymentMethod("VNPAY");
+            bookingRepository.save(booking);
+        }
+
+        // Cập nhật trạng thái giao dịch
+        transaction.setProcessed(true);
+        transaction.setVnpResponseCode(vnpResponseCode);
+        transaction.setStatus("00".equals(vnpResponseCode) ? "SUCCESS" : "FAILED");
         vnPayTransactionRepository.save(transaction);
     }
 

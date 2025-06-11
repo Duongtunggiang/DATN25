@@ -1,5 +1,8 @@
 package com.api.API32025.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -14,7 +17,9 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @JsonManagedReference
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "booking_car",
@@ -24,6 +29,7 @@ public class Booking {
     private List<Car> cars = new ArrayList<>();
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
@@ -44,6 +50,60 @@ public class Booking {
 
     @Column(name = "feedback_content")
     private String contentFeedback;
+
+    @Column(name = "status")
+    private Car.CarStatus status ;
+    // PENDING: Đang chờ xử lý
+    // DEPOSIT: Đã cọc
+    // DELIVERING: Đang giao xe
+    // RENTED: Đã nhận xe, đang thuê
+    // RETURNED: Đã trả xe, có thể feedback
+    // CANCELED: Đã huỷ
+
+    @Column(name = "payment_method")
+    private String paymentMethod; // "WALLET" hoặc "VNPAY"
+
+    @ManyToOne
+    @JoinColumn(name = "wallet_id")
+    @JsonBackReference
+    private Wallet wallet;
+
+    @ManyToOne
+    @JoinColumn(name = "vnPayTransaction_id")
+    @JsonBackReference
+    private VnPayTransaction vnPayTransaction;
+
+    public VnPayTransaction getVnPayTransaction() {
+        return vnPayTransaction;
+    }
+
+    public void setVnPayTransaction(VnPayTransaction vnPayTransaction) {
+        this.vnPayTransaction = vnPayTransaction;
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public Car.CarStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(Car.CarStatus status) {
+        this.status = status;
+    }
 
     public Long getId() {
         return id;

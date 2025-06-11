@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -16,6 +17,8 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
+    @Value("${jwt.expiration}")
+    private Long jwtExpiration;
 
     private final String SECRET = "9f4bC6e8!gBv2tJmLxWqYzPlRkVuXyZq";
     private final Key SECRET_KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
@@ -29,7 +32,7 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(String.valueOf(account.getId()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }

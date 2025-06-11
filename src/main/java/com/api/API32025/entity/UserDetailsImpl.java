@@ -47,7 +47,9 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return account.getStatus().equalsIgnoreCase("active");
+        Account.AccountStatus status = account.getStatus();
+        return status.equals(Account.AccountStatus.ACTIVE) ||
+                status.equals(Account.AccountStatus.VERIFY);
     }
 
     public Account getAccount() {

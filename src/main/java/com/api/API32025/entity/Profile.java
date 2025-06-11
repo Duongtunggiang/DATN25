@@ -38,6 +38,15 @@ public class Profile {
     @Column(name = "avatar_path")
     private String avatarPath;
 
+    @Column(name = "cccd_verified")
+    private boolean cccdVerified = false;
+
+    @Column(name = "address")
+    private String address;
+
+    @ManyToOne
+    @JoinColumn(name = "province_code")
+    private Province province;
 
     // Liên kết 1-1 với Account
     @OneToOne
@@ -122,6 +131,30 @@ public class Profile {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public boolean isCccdVerified() {
+        return cccdVerified;
+    }
+
+    public void setCccdVerified(boolean cccdVerified) {
+        this.cccdVerified = cccdVerified;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Province getProvince() {
+        return province;
+    }
+
+    public void setProvince(Province province) {
+        this.province = province;
     }
 
     public Profile() {

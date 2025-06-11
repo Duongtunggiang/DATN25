@@ -30,12 +30,26 @@ public class Wallet {
     @OneToOne
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
+
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Transaction> transactions = new ArrayList<>();
 
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<VnPayTransaction> vnPayTransactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Booking> bookings = new ArrayList<>();
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
 
     public void setId(Long id) {
         this.id = id;

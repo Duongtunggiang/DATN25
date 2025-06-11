@@ -2,8 +2,10 @@ package com.api.API32025.initializer;
 
 import com.api.API32025.entity.Account;
 import com.api.API32025.entity.Role;
+import com.api.API32025.entity.Profile;
 import com.api.API32025.respository.AccountRepository;
 import com.api.API32025.respository.RoleRepository;
+import com.api.API32025.respository.ProfileRepository;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +19,9 @@ public class AdminInitializer implements CommandLineRunner {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private ProfileRepository profileRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -37,10 +42,34 @@ public class AdminInitializer implements CommandLineRunner {
             admin.setPassword(passwordEncoder.encode("Admin12345"));
             admin.setUsername("Admin");
             admin.setRole(adminRole);
+            admin.setStatus(Account.AccountStatus.ACTIVE);
             accountRepository.save(admin);
-            System.out.println("Admin account created.");
+
+            // Tạo profile cho admin
+            Profile adminProfile = new Profile();
+            adminProfile.setAccount(admin);
+            adminProfile.setEmail(adminEmail);
+            adminProfile.setFirstName("System");
+            adminProfile.setLastName("Admin");
+            adminProfile.setAvatarPath("/Images/avatars/default-avatar.png");
+            adminProfile.setPhoneNumber("0123456789");
+            profileRepository.save(adminProfile);
+
+            System.out.println("Admin account and profile created.");
         } else {
-            System.out.println("Admin account already exists.");
+            Account admin = accountRepository.findByEmail(adminEmail);
+            if (admin != null && profileRepository.findByAccount(admin) == null) {
+                Profile adminProfile = new Profile();
+                adminProfile.setAccount(admin);
+                adminProfile.setFirstName("System");
+                adminProfile.setLastName("Admin");
+                adminProfile.setAvatarPath("/Images/avatars/default-avatar.png");
+                adminProfile.setPhoneNumber("0123456789");
+                profileRepository.save(adminProfile);
+                System.out.println("Admin profile created for existing account.");
+            } else {
+                System.out.println("Admin account and profile already exist.");
+            }
         }
     }
 }

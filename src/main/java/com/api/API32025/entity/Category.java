@@ -2,11 +2,15 @@ package com.api.API32025.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Setter
+@Getter
 @Table(name = "category")
 public class Category {
 
@@ -22,38 +26,8 @@ public class Category {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Brand> brands = new ArrayList<>();
+    private List<Car> cars = new ArrayList<>();
 
-    public List<Brand> getBrands() {
-        return brands;
-    }
 
-    public String getCategoryImage() {
-        return categoryImage;
-    }
-
-    public void setCategoryImage(String categoryImage) {
-        this.categoryImage = categoryImage;
-    }
-
-    public void setBrands(List<Brand> brands) {
-        this.brands = brands;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }
 

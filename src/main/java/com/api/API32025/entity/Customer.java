@@ -1,5 +1,7 @@
 package com.api.API32025.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -17,8 +19,32 @@ public class Customer {
     @JoinColumn(name = "account_id", nullable = false, unique = true)
     private Account account;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Chat> chats = new ArrayList<>();
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<FavoriteCar> favoriteCars = new ArrayList<>();
+
+    public List<FavoriteCar> getFavoriteCars() {
+        return favoriteCars;
+    }
+
+    public void setFavoriteCars(List<FavoriteCar> favoriteCars) {
+        this.favoriteCars = favoriteCars;
+    }
+
+    public List<Chat> getChats() {
+        return chats;
+    }
+
+    public void setChats(List<Chat> chats) {
+        this.chats = chats;
+    }
 
     public Long getId() {
         return id;
