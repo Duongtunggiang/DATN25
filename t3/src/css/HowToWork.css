@@ -1,0 +1,247 @@
+.how-to-work-page {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.how-to-work-content {
+    padding: 80px 0;
+}
+
+/* Hero Section */
+.hero-section-how {
+    background: linear-gradient(135deg, #0062cc 0%, #0096ff 100%);
+    padding: 60px 0;
+    text-align: center;
+    color: white;
+    margin-bottom: 60px;
+}
+
+.container-how {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.title-how {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.lead-how {
+    font-size: 1.5rem;
+    opacity: 0.9;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Steps Section */
+.steps-section-how {
+    padding: 60px 0;
+}
+
+.section-title-how {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+    color: #333;
+}
+
+.steps-grid-how {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.step-card-how {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.step-card-how:hover {
+    transform: translateY(-5px);
+}
+
+.step-number-how {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #007bff;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.step-icon-how {
+    font-size: 2.5rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+/* Requirements Section */
+.requirements-section-how {
+    background-color: white;
+    padding: 60px 0;
+}
+
+.requirements-grid-how {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.requirement-card-how {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.requirement-icon-how {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.requirement-card-how ul {
+    list-style: none;
+    padding: 0;
+}
+
+.requirement-card-how li {
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.requirement-card-how li:before {
+    content: "•";
+    color: #007bff;
+    position: absolute;
+    left: 0;
+}
+
+/* Rules Section */
+.rules-section-how {
+    padding: 60px 0;
+    background-color: #f8f9fa;
+}
+
+.rules-grid-how {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.rule-card-how {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.rule-icon-how {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.rule-card-how ul {
+    list-style: none;
+    padding: 0;
+}
+
+.rule-card-how li {
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.rule-card-how li:before {
+    content: "✓";
+    color: #28a745;
+    position: absolute;
+    left: 0;
+}
+
+/* FAQ Section */
+.faq-section-how {
+    padding: 60px 0;
+    background-color: white;
+}
+
+.faq-grid-how {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.faq-item-how {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.faq-item-how h3 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .title-how {
+        font-size: 2.5rem;
+    }
+
+    .lead-how {
+        font-size: 1.2rem;
+    }
+
+    .section-title-how {
+        font-size: 2rem;
+    }
+
+    .steps-grid-how,
+    .requirements-grid-how,
+    .rules-grid-how,
+    .faq-grid-how {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .title-how {
+        font-size: 2rem;
+    }
+
+    .lead-how {
+        font-size: 1rem;
+    }
+
+    .section-title-how {
+        font-size: 1.8rem;
+    }
+
+    .step-card-how,
+    .requirement-card-how,
+    .rule-card-how,
+    .faq-item-how {
+        padding: 20px;
+    }
+} 

@@ -1,0 +1,204 @@
+.about-page {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.about-content {
+    padding: 80px 0;
+}
+
+/* Hero Section */
+.hero-section-about {
+    background: linear-gradient(135deg, #0062cc 0%, #0096ff 100%);
+    padding: 60px 0;
+    text-align: center;
+    color: white;
+    margin-bottom: 60px;
+}
+
+.container-about {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.title-about {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.lead-about {
+    font-size: 1.5rem;
+    opacity: 0.9;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Mission Section */
+.mission-section-about {
+    padding: 60px 0;
+}
+
+.section-title-about {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+    color: #333;
+}
+
+.mission-grid-about {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.mission-card-about {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.mission-card-about:hover {
+    transform: translateY(-5px);
+}
+
+.mission-icon-about {
+    font-size: 2.5rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+/* Stats Section */
+.stats-section-about {
+    background-color: #007bff;
+    padding: 60px 0;
+    color: white;
+}
+
+.stats-grid-about {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    text-align: center;
+}
+
+.stat-item-about {
+    padding: 20px;
+}
+
+.stat-item-about h3 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+/* Features Section */
+.features-section-about {
+    padding: 60px 0;
+    background-color: white;
+}
+
+.features-grid-about {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.feature-card-about {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.feature-card-about:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon-about {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+/* Contact Section */
+.contact-section-about {
+    padding: 60px 0;
+    background-color: #f8f9fa;
+}
+
+.contact-info-about {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.contact-item-about {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.contact-item-about h3 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .title-about {
+        font-size: 2.5rem;
+    }
+
+    .lead-about {
+        font-size: 1.2rem;
+    }
+
+    .section-title-about {
+        font-size: 2rem;
+    }
+
+    .mission-grid-about,
+    .features-grid-about,
+    .contact-info-about {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-item-about h3 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .title-about {
+        font-size: 2rem;
+    }
+
+    .lead-about {
+        font-size: 1rem;
+    }
+
+    .section-title-about {
+        font-size: 1.8rem;
+    }
+
+    .mission-card-about,
+    .feature-card-about,
+    .contact-item-about {
+        padding: 20px;
+    }
+
+    .stat-item-about h3 {
+        font-size: 1.8rem;
+    }
+} 

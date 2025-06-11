@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import '../css/AddCarPage.css';
-import { addBrand, addCar, getAllbrand, getAllCategory, getAllSegment } from '../BackEnd/authen';
-import axios from 'axios';
-
+import { addBrand, addCar, getAllbrand, getAllCategory, getAllSegment, getAllProvinces } from '../BackEnd/authen';
+import axiosInstance from '../Authen/axiosInstance';
+import { useNavigate } from 'react-router-dom';
 
 const AddCarPage = () => {
   const [segments, setSegments] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [provinces, setProvinces] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [selectedSegmentId, setSelectedSegmentId] = useState('');
   const [brandInput, setBrandInput] = useState('');
   const [brandId, setBrandId] = useState(null);
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
+
   const [carData, setCarData] = useState({
     carName: '',
     licensePlate: '',
@@ -20,7 +24,11 @@ const AddCarPage = () => {
     color: '',
     seats: '',
     pricePerDay: '',
-    imagePaths: ''
+    imagePaths: '',
+    address: '',
+    provinceCode: '',
+    fuel: '',
+    transmission: ''
   });
   const token = localStorage.getItem('token');
   useEffect(() => {
@@ -35,69 +43,121 @@ const AddCarPage = () => {
     getAllbrand()
       .then(res => setBrands(Array.isArray(res) ? res : []))
       .catch(err => console.error("Error fetching brands:", err));
+
+    getAllProvinces()
+      .then(res => setProvinces(Array.isArray(res) ? res : []))
+      .catch(err => console.error("Error fetching provinces:", err));
   }, []);
 
   const handleCarChange = (e) => {
     const { name, value } = e.target;
-    setCarData(prev => ({ ...prev, [name]: value }));
+    if (name === 'pricePerDay') {
+      // Remove commas and convert to number
+      const numericValue = value.replace(/,/g, '');
+      if (!isNaN(numericValue)) {
+        // Format with commas
+        const formattedValue = Number(numericValue).toLocaleString('en-US');
+        setCarData(prev => ({ ...prev, [name]: formattedValue }));
+      }
+    } else if (name === 'provinceCode') {
+      // When province is selected, update both provinceCode and address
+      const selectedProvince = provinces.find(p => p.code === value);
+      setCarData(prev => ({
+        ...prev,
+        provinceCode: value,
+        address: selectedProvince ? selectedProvince.name : ''
+      }));
+    } else {
+      setCarData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleAddCar = async (e) => {
     e.preventDefault();
-
-    if (!brandId) {
-      alert("Vui lòng chọn hoặc thêm một thương hiệu trước.");
+  
+    if (!selectedCategoryId) {
+      alert("Vui lòng chọn danh mục xe!");
       return;
     }
-
+  
+    if (!selectedSegmentId) {
+      alert("Vui lòng chọn phân khúc xe!");
+      return;
+    }
+  
+    if (!brandId) {
+      alert("Vui lòng chọn hoặc thêm một thương hiệu!");
+      return;
+    }
+  
     try {
       const formData = new FormData();
       formData.append("carName", carData.carName);
       formData.append("licensePlate", carData.licensePlate);
-      formData.append("brandId", brandId);
       formData.append("model", carData.model);
-      formData.append("year", carData.year);
+      formData.append("year", parseInt(carData.year));
       formData.append("color", carData.color);
-      formData.append("seats", carData.seats);
-      formData.append("pricePerDay", carData.pricePerDay);
-      formData.append("carImage", carData.imagePaths); // carImage là file
-
-      await axios.post("http://localhost:8080/api/cars/add-car", formData, {
+      formData.append("seats", parseInt(carData.seats));
+      // Remove commas before sending to server
+      formData.append("pricePerDay", parseFloat(carData.pricePerDay.replace(/,/g, '')));
+      formData.append("carImage", carData.imagePaths);
+      formData.append("address", carData.address);
+      formData.append("provinceCode", carData.provinceCode);
+      formData.append("brandId", parseInt(brandId));
+      formData.append("segmentId", parseInt(selectedSegmentId));
+      formData.append("categoryId", parseInt(selectedCategoryId));
+      formData.append("fuel", carData.fuel);
+      formData.append("transmission", carData.transmission);
+  
+      const response = await axiosInstance.post("/api/cars/add-car", formData, {
         headers: {
-          "Authorization": `Bearer ${token}`,
           "Content-Type": "multipart/form-data"
         }
       });
-
+  
+      const carId = response.data;
       alert('Thêm xe thành công!');
+      navigate(`/them-chi-tiet-xe/${carId}`);
+  
     } catch (err) {
-      alert('Lỗi khi thêm xe: ' + err.message);
-      console.error(err);
+      console.error('Full error:', err);
+      console.error('Error response:', err.response?.data);
+      
+      setErrorMessage('');
+      
+      if (err.response?.status === 400) {
+        setErrorMessage('Biển số xe đã tồn tại trong hệ thống');
+      } else if (err.customMessage) {
+        setErrorMessage(err.customMessage);
+      } else {
+        setErrorMessage('Đã xảy ra lỗi khi thêm xe');
+      }
     }
   };
+  
 
 
 
   const handleAddBrand = async () => {
-    if (!brandInput || !selectedCategoryId || !selectedSegmentId) {
+    if (!brandInput ) {
       alert('Vui lòng chọn đủ thông tin thương hiệu');
       return;
     }
 
     try {
       const data = await addBrand({
-        brandName: brandInput,
-        categoryId: selectedCategoryId,
-        segmentId: selectedSegmentId
+        brandName: brandInput
       });
       setBrandId(data.id);
       alert('Thêm thương hiệu thành công!');
+      
     } catch (err) {
       alert('Lỗi khi thêm thương hiệu: ' + err.message);
       console.error(err);
     }
+    window.location.reload();
   };
-
+  
 
   return (
     <div className="container py-4">
@@ -155,10 +215,11 @@ const AddCarPage = () => {
       </div>
 
       <div className="mt-3">
-        <select
+      <select
           className="form-select w-50"
-          onChange={(e) => setBrandId(e.target.value)}
+          onChange={(e) => setBrandId(Number(e.target.value))}  
         >
+
           <option value="">-- Hoặc chọn brand có sẵn --</option>
           {brands.map(b => (
             <option key={b.id} value={b.id}>{b.brandName}</option>
@@ -193,6 +254,10 @@ const AddCarPage = () => {
 
             <div className="col-md-6">
               <input className="form-control" type="text" name="licensePlate" placeholder="Biển số" onChange={handleCarChange} required />
+              {errorMessage && (
+                <div className="alert alert-danger mt-3">{errorMessage}</div>
+              )}
+
             </div>
             <div className="col-md-6">
               <input className="form-control" type="text" name="model" placeholder="Model" onChange={handleCarChange} required />
@@ -207,7 +272,59 @@ const AddCarPage = () => {
               <input className="form-control" type="number" name="seats" placeholder="Số ghế" onChange={handleCarChange} required />
             </div>
             <div className="col-md-6">
-              <input className="form-control" type="number" name="pricePerDay" placeholder="Giá thuê mỗi ngày" onChange={handleCarChange} required />
+              <input 
+                className="form-control" 
+                type="text" 
+                name="pricePerDay" 
+                placeholder="Giá thuê mỗi ngày" 
+                value={carData.pricePerDay}
+                onChange={handleCarChange} 
+                required 
+              />
+            </div>
+            <div className="col-md-6">
+              <select
+                className="form-select"
+                name="provinceCode"
+                value={carData.provinceCode}
+                onChange={handleCarChange}
+                required
+              >
+                <option value="">Chọn tỉnh/thành phố</option>
+                {provinces.map(province => (
+                  <option key={province.code} value={province.code}>
+                    {province.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="col-md-6">
+              <select
+                className="form-control"
+                name="fuel"
+                onChange={handleCarChange}
+                required
+              >
+                <option value="">-- Chọn loại nhiên liệu --</option>
+                <option value="GASOLINE">Xăng</option>
+                <option value="DIESEL">Dầu diesel</option>
+                <option value="ELECTRIC">Điện</option>
+                <option value="HYBRID">Hybrid</option>
+              </select>
+            </div>
+            <div className="col-md-6">
+              <select
+                className="form-control"
+                name="transmission"
+                onChange={handleCarChange}
+                required
+              >
+                <option value="">-- Chọn hộp số --</option>
+                <option value="MANUAL">Số sàn</option>
+                <option value="AUTOMATIC">Số tự động</option>
+                <option value="CVT">Hộp số CVT</option>
+                <option value="DCT">Hộp số ly hợp kép</option>
+              </select>
             </div>
             <div className="col-12">
               <button className="btn btn-primary" type="submit">Thêm Xe</button>

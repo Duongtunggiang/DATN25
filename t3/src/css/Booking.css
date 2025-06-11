@@ -1,0 +1,603 @@
+.booking-container {
+    max-width: 1000px;
+    margin: 100px auto;
+    padding: 20px;
+}
+
+.booking-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 2.5rem;
+}
+
+/* Step Indicator */
+.booking-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+    padding: 0 2rem;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+    flex: 1;
+    position: relative;
+}
+
+.step-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    border: 3px solid #dee2e6;
+    color: #6c757d;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.step.active .step-icon {
+    background: #007bff;
+    border-color: #007bff;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+}
+
+.step-label {
+    font-size: 1rem;
+    color: #6c757d;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.step.active .step-label {
+    color: #007bff;
+    transform: scale(1.05);
+}
+
+.step-connector {
+    flex: 1;
+    height: 3px;
+    background: #dee2e6;
+    margin: 0 20px;
+    position: relative;
+    top: -42px;
+    z-index: 0;
+}
+
+/* Content Sections */
+.booking-step-content {
+    padding: 30px 0;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-title {
+    margin-bottom: 2rem;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.section-title svg {
+    margin-right: 12px;
+    color: #007bff;
+}
+
+/* Car Info Card */
+.car-info-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.car-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.car-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.car-image:hover img {
+    transform: scale(1.05);
+}
+
+.car-details {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.car-details h4 {
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.car-details p {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: #4a5568;
+}
+
+.price {
+    font-size: 1.4rem;
+    color: #007bff;
+    font-weight: 600;
+    margin-top: auto;
+}
+
+/* Date Picker */
+.date-picker-container {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    margin-bottom: 2.5rem;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    outline: none;
+}
+
+.date-arrow {
+    color: #007bff;
+    font-size: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* Payment Info */
+.payment-info {
+    margin-bottom: 2.5rem;
+}
+
+.info-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 2px solid #dee2e6;
+    font-size: 1.1rem;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row.total {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #007bff;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #dee2e6;
+}
+
+.insufficient-funds {
+    color: #dc3545;
+    margin-top: 1rem;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(220, 53, 69, 0.1);
+    border-radius: 8px;
+    font-weight: 500;
+    border: 2px solid rgba(220, 53, 69, 0.2);
+}
+
+/* Confirmation Details */
+.confirmation-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.info-section {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.info-section h5 {
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    font-size: 1.3rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.info-section h5 svg {
+    margin-right: 10px;
+    color: #007bff;
+}
+
+.date-range {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.date-range svg {
+    margin: 0 1.5rem;
+    color: #007bff;
+}
+
+.payment-summary {
+    background: white;
+}
+
+.total-amount {
+    color: #007bff;
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+/* Buttons */
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 3rem;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.btn-lg {
+    padding: 1.25rem 2.5rem;
+}
+
+.btn-primary {
+    background: #007bff;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2);
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 123, 255, 0.3);
+}
+
+.btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+    background: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .booking-container {
+        max-width: 100%;
+        margin: 80px auto;
+    }
+
+    .car-info-card {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .car-image {
+        width: 100%;
+        height: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .booking-container {
+        padding: 15px;
+        margin-top: 70px;
+    }
+
+    .booking-card {
+        padding: 1.5rem;
+    }
+
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+    }
+
+    .step-label {
+        font-size: 0.9rem;
+    }
+
+    .date-picker-container {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .date-arrow {
+        transform: rotate(90deg);
+        margin: 0;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .button-group button {
+        width: 100%;
+    }
+
+    .section-title {
+        font-size: 1.4rem;
+    }
+
+    .car-info-card {
+        padding: 1.5rem;
+    }
+    
+    .car-image {
+        height: 180px;
+    }
+    
+    .car-details {
+        margin-top: 1rem;
+    }
+    
+    .car-details h4 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .price {
+        font-size: 1.2rem;
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .booking-container {
+        padding: 10px;
+    }
+
+    .booking-card {
+        padding: 1rem;
+    }
+
+    .step-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+
+    .step-label {
+        font-size: 0.8rem;
+    }
+
+    .car-info-card {
+        padding: 1rem;
+    }
+    
+    .car-image {
+        height: 160px;
+    }
+}
+
+.payment-methods {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.payment-methods h4 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.payment-option {
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+.payment-option:hover {
+    border-color: #0d6efd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.payment-option input[type="radio"] {
+    margin-right: 1rem;
+}
+
+.payment-option label {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.payment-option .text-danger {
+    font-size: 0.875rem;
+}
+
+/* Status badge styles */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: inline-block;
+    text-align: center;
+    min-width: 120px;
+}
+
+/* Status colors */
+.status-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.status-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.status-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.status-delivering {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.status-rented {
+    background-color: #6f42c1;
+    color: white;
+}
+
+.status-returned {
+    background-color: #20c997;
+    color: white;
+}
+
+.status-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.status-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.status-rejected {
+    background-color: #d63384;
+    color: white;
+}
+
+.status-cancel {
+    background-color: #dc3545;
+    color: white;
+}
+
+.status-refund {
+    background-color: #8B5CF6;
+    color: white;
+    font-weight: 600;
+}
+
+/* Hover effects */
+.status-badge:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+
+/* Table specific styles */
+.booking-table .status-badge {
+    margin: 0 auto;
+    display: inline-block;
+} 

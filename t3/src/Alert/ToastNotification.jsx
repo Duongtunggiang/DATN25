@@ -1,25 +1,52 @@
 import React, { useEffect, useState } from 'react';
+import './ToastNotification.css';
 
-const ToastNotification = ({ message, onClose }) => {
-    const [visible, setVisible] = useState(true);
+const ToastNotification = ({ message, type = 'success', onClose }) => {
+    const [isExiting, setIsExiting] = useState(false);
+    const [progress, setProgress] = useState(100);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setVisible(false);
+        const duration = 3000; // 3 seconds
+        const interval = 10; // Update progress every 10ms
+        
+        const progressTimer = setInterval(() => {
+            setProgress((prev) => {
+                const newProgress = Math.max(0, prev - (100 / (duration / interval)));
+                if (newProgress === 0) {
+                    handleClose();
+                }
+                return newProgress;
+            });
+        }, interval);
+
+        return () => {
+            clearInterval(progressTimer);
+        };
+    }, []);
+
+    const handleClose = () => {
+        setIsExiting(true);
+        setTimeout(() => {
             onClose();
-        }, 3000); // 3 giây rồi ẩn
-
-        return () => clearTimeout(timer);
-    }, [onClose]);
-
-    if (!visible) return null;
+        }, 300); // Match animation duration
+    };
 
     return (
-        <div className="toast-container position-fixed bottom-0 end-0 p-3">
-            <div className="toast show bg-success text-white" role="alert">
-                <div className="toast-body d-flex justify-content-between align-items-center">
-                    {message}
-                    <button type="button" className="btn-close btn-close-white ms-3" onClick={onClose}></button>
+        <div className="custom-toast-wrapper">
+            <div className={`custom-toast-notification ${type} ${isExiting ? 'exiting' : ''}`}>
+                <div className="custom-toast-content">{message}</div>
+                <button 
+                    className="custom-toast-close" 
+                    onClick={handleClose}
+                    aria-label="Close notification"
+                >
+                    ×
+                </button>
+                <div className="custom-toast-progress">
+                    <div 
+                        className="custom-toast-progress-bar"
+                        style={{ width: `${progress}%` }}
+                    />
                 </div>
             </div>
         </div>

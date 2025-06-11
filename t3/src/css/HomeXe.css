@@ -1,0 +1,575 @@
+/* Main container */
+#carManagementPage {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f6f9fc 0%, #f1f4f8 100%);
+    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.car-management__container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+.car-management__wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Stats Section */
+.car-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
+}
+
+.car-stat__card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.car-stat__card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.car-stat__icon {
+    font-size: 3rem;
+    padding: 1rem;
+    border-radius: 10px;
+    color: white;
+}
+
+.car-stat__card:nth-child(1) .car-stat__icon {
+    background: linear-gradient(135deg, #36D1DC 0%, #5B86E5 100%);
+}
+
+.car-stat__card:nth-child(2) .car-stat__icon {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+}
+
+.car-stat__card:nth-child(3) .car-stat__icon {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.car-stat__card:nth-child(4) .car-stat__icon {
+    background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+}
+
+.car-stat__info h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.car-stat__info p {
+    margin: 0.2rem 0 0;
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+/* Header Section */
+.car-management__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
+}
+
+.car-filters {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.car-filter__btn {
+    padding: 0.6rem 1rem;
+    border: 1px solid #e9ecef;
+    background: white;
+    border-radius: 8px;
+    color: #495057;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+}
+
+.car-filter__btn:hover {
+    border-color: #3498db;
+    color: #3498db;
+    transform: translateY(-2px);
+}
+
+.car-filter__btn.active {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    border-color: #3498db;
+    color: white;
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+}
+
+.car-actions {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.car-add__btn {
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+}
+
+.car-add__btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(52, 152, 219, 0.4);
+}
+
+.car-trash__btn {
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: 1px solid #e9ecef;
+    background: white;
+    color: #495057;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.car-trash__btn:hover {
+    border-color: #e74c3c;
+    color: #e74c3c;
+    transform: translateY(-2px);
+}
+
+/* Car Grid */
+.car-grid-container-home-xe {
+    width: 100%;
+    overflow: hidden;
+    padding: 0 1rem;
+}
+
+.car-grid-home-xe {
+    display: grid;
+    grid-template-columns: repeat(4, 250px);
+    gap: 1.5rem;
+    justify-content: center;
+    margin: 1.5rem 0;
+}
+
+.car-item-home-xe {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.car-item-home-xe:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.car-item__image-home-xe {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.car-item__image-home-xe img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.car-item__details {
+    padding: 12px !important;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.car-item__title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+    color: #333;
+}
+
+.car-item__rating {
+    margin: 4px 0;
+}
+
+.rating-section {
+    margin: 4px 0;
+}
+
+.average-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.star-rating {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.star-icon {
+    font-size: 14px;
+    color: #e4e5e9;
+}
+
+.star-icon.text-warning {
+    color: #ffc107;
+}
+
+.rating-count {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.car-item__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 4px 0;
+}
+
+.car-item__price {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #28a745;
+}
+
+.car-item__specs {
+    display: flex;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.car-item__location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: #666;
+    margin: 4px 0;
+}
+
+.car-item__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.car-item__btn {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.car-item__btn--primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.car-item__btn--success {
+    background-color: #28a745;
+    color: white;
+}
+
+.car-item__btn--outline {
+    background-color: transparent;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+    padding: 4px 8px;
+}
+
+.car-item__btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.car-item__status {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: white;
+}
+
+.car-item__status--success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+.car-item__status--warning { background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); }
+.car-item__status--info { background: linear-gradient(135deg, #36D1DC 0%, #5B86E5 100%); }
+.car-item__status--primary { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+.car-item__status--delivering { background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%); }
+.car-item__status--rented { background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%); }
+.car-item__status--returned { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+.car-item__status--secondary { background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); }
+.car-item__status--rejected { background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%); }
+.car-item__status--cancel { background: linear-gradient(135deg, #2c3e50 0%, #bdc3c7 100%); }
+.car-item__status--refund { background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%); }
+
+/* Empty State */
+.car-empty {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    margin: 0 0.5rem;
+}
+
+.car-empty__icon {
+    font-size: 4rem;
+    color: #3498db;
+    margin-bottom: 2rem;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 4px 12px rgba(52, 152, 219, 0.3));
+}
+
+.car-empty h3 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.car-empty p {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Loading State */
+.car-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 500px;
+}
+
+.car-loading__spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+}
+
+/* Pagination */
+.car-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding: 0.8rem 0;
+}
+
+.car-pagination__btn {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #e9ecef;
+    background: white;
+    border-radius: 8px;
+    color: #495057;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.car-pagination__btn:hover {
+    border-color: #3498db;
+    color: #3498db;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15);
+}
+
+.car-pagination__btn.active {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    border-color: #3498db;
+    color: white;
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+}
+
+/* Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+    #carManagementPage {
+        max-width: 100%;
+        padding: 2rem;
+    }
+    
+    .car-management__container {
+        margin: 0 2rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .car-grid-home-xe {
+        grid-template-columns: repeat(3, 250px);
+    }
+    
+    .car-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .car-management__container {
+        margin: 0 2rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .car-grid-home-xe {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .car-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .car-management__container {
+        margin: 0 1rem;
+    }
+
+    .car-item-home-xe {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .car-grid-home-xe {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .car-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .car-management__container {
+        margin: 0 1rem;
+        padding: 1rem;
+    }
+    
+    .car-stat__card {
+        padding: 1.5rem;
+    }
+    
+    .car-filter__btn,
+    .car-add__btn,
+    .car-trash__btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    #carManagementPage {
+        padding: 1rem;
+    }
+
+    .car-management__container {
+        padding: 1rem;
+        margin: 0;
+    }
+
+    .car-grid-container-home-xe {
+        padding: 0 0.5rem;
+    }
+
+    .car-item-home-xe {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+@media (max-width: 576px) {
+    #carManagementPage {
+        padding: 0.5rem;
+    }
+
+    .car-management__container {
+        padding: 0.5rem;
+        border-radius: 10px;
+    }
+
+    .car-grid-container-home-xe {
+        padding: 0 0.25rem;
+    }
+
+    .car-grid-home-xe {
+        gap: 0.75rem;
+    }
+
+    .car-item-home-xe {
+        width: 100%;
+    }
+} 

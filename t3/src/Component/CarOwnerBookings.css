@@ -1,0 +1,119 @@
+.container-car-booking {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.title-car-booking {
+  color: #2c3e50;
+  font-weight: 600;
+  text-align: center;
+}
+
+.loading-container-car-booking {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.card-car-booking {
+  background: #ffffff;
+  border-radius: 12px;
+  transition: transform 0.2s ease-in-out;
+  border: 1px solid #e0e0e0;
+}
+
+.card-car-booking:hover {
+  transform: translateY(-2px);
+}
+
+.booking-header-car-booking {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.booking-title-car-booking {
+  color: #1a73e8;
+  font-size: 1.25rem;
+}
+
+.customer-info-car-booking p {
+  color: #5f6368;
+  display: flex;
+  align-items: center;
+}
+
+.badge-car-booking {
+  padding: 6px 12px;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.price-car-booking {
+  color: #1e88e5;
+  font-size: 1.1rem;
+}
+
+.dates-car-booking {
+  color: #666;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.car-list-car-booking {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.car-list-title-car-booking {
+  color: #3c4043;
+  margin-bottom: 1rem;
+}
+
+.car-item-car-booking {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.car-info-car-booking {
+  font-weight: 500;
+  color: #3c4043;
+}
+
+.car-price-car-booking {
+  color: #1e88e5;
+  font-weight: 500;
+}
+
+.action-buttons-car-booking {
+  margin-top: 1rem;
+}
+
+.action-buttons-car-booking button {
+  transition: all 0.2s ease;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+
+.action-buttons-car-booking button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.alert-car-booking {
+  text-align: center;
+  padding: 2rem;
+  border-radius: 8px;
+  font-weight: 500;
+} 

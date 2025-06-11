@@ -17,3 +17,172 @@
   border-color: #4caf50;
   background-color: #e8f5e9;
 }
+
+/* Form Section Styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h3 {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-left: 1rem;
+  /* border-left: 4px solid #0d6efd; */
+}
+
+/* Select Styles */
+.form-select {
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  color: #2c3e50;
+  background-color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+}
+
+/* Brand Input Section */
+.d-flex.gap-2 {
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+}
+
+/* Button Styles */
+.btn {
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-success {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  border: none;
+  box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2);
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+  border: none;
+  box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(13, 110, 253, 0.3);
+}
+
+/* Car Form Grid */
+.row.g-3 {
+  margin-top: 1rem;
+}
+
+.col-md-6 {
+  margin-bottom: 1.2rem;
+}
+
+/* File Input Styling */
+input[type="file"].form-control {
+  padding: 0.6rem;
+  line-height: 1.5;
+}
+
+input[type="file"].form-control::file-selector-button {
+  padding: 0.5rem 1rem;
+  margin-right: 1rem;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(45deg, #6c757d, #495057);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input[type="file"].form-control::file-selector-button:hover {
+  background: linear-gradient(45deg, #495057, #343a40);
+}
+
+/* Error Message */
+.alert-danger {
+  background-color: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #ffa7a7;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* Number Input */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .form-select, 
+  .form-control {
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .col-md-6 {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Placeholder Styling */
+.form-control::placeholder {
+  color: #adb5bd;
+  font-size: 0.95rem;
+}
+
+/* Input Focus Animation */
+.form-control:focus,
+.form-select:focus {
+  transform: translateY(-1px);
+}

@@ -1,0 +1,186 @@
+.vnpay-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+    background-color: #f8f9fa;
+}
+
+.vnpay-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    overflow: hidden;
+}
+
+.vnpay-header {
+    background: linear-gradient(135deg, #0066cc, #0044aa);
+    color: white;
+    padding: 2rem;
+    display: flex;
+    font-weight: bold;
+    align-items: center;
+    gap: 1rem;
+}
+
+.vnpay-icon {
+    font-size: 2rem;
+}
+
+.vnpay-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.vnpay-content {
+    padding: 2rem;
+}
+
+.amount-input-group {
+    margin-bottom: 2rem;
+}
+
+.amount-input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #495057;
+    font-weight: 500;
+}
+
+.input-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1.25rem;
+    color: #495057;
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+.input-wrapper input:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    background-color: white;
+    color: #495057;
+}
+
+.input-wrapper input::placeholder {
+    color: #b9b9b9;
+}
+
+.amount-preview {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.amount-preview strong {
+    color: #0066cc;
+    font-size: 1rem;
+}
+
+.payment-note {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.payment-note p {
+    color: #495057;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+.payment-note ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: #6c757d;
+}
+
+.payment-note li {
+    margin-bottom: 0.5rem;
+}
+
+.payment-note li:last-child {
+    margin-bottom: 0;
+}
+
+.vnpay-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-back,
+.btn-confirm {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+}
+
+.btn-back {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.btn-back:hover {
+    background: #dee2e6;
+}
+
+.btn-confirm {
+    background: #0066cc;
+    color: white;
+    flex: 1;
+}
+
+.btn-confirm:hover {
+    background: #0055aa;
+}
+
+.btn-confirm:disabled {
+    background: #adb5bd;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .vnpay-container {
+        padding: 1rem;
+    }
+
+    .vnpay-header {
+        padding: 1.5rem;
+    }
+
+    .vnpay-content {
+        padding: 1.5rem;
+    }
+
+    .vnpay-actions {
+        flex-direction: column;
+    }
+
+    .btn-back,
+    .btn-confirm {
+        width: 100%;
+        justify-content: center;
+    }
+} 

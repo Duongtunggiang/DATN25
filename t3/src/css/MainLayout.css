@@ -1,0 +1,73 @@
+/* Reset default margins and padding */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+}
+
+#root {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.main-content {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: 70px; /* Height of the fixed header */
+    min-height: calc(100vh - 70px); /* Subtract header height */
+}
+
+/* Role-specific content padding */
+.role-admin .main-content,
+.role-carowner .main-content,
+.role-customer .main-content {
+    width: 100%;
+    align-self: center;
+    min-height: calc(100vh - 70px);
+}
+
+/* Content wrappers */
+
+.admin-page,
+.home-xe-page {
+    flex: 1;
+    width: 85%;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+}
+
+.home-page {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+/* Sections */
+.home-xe-section,
+.admin-section {
+    flex: 1;
+    width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .main-content {
+        padding-top: 60px;
+        min-height: calc(100vh - 60px);
+    }
+}

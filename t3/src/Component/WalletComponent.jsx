@@ -1,30 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import { getTransactionHistory, getWalletBalance, depositMoney, withdrawMoney } from '../BackEnd/authen';
 import ToastNotification from '../Alert/ToastNotification';
+import { FaWallet, FaMoneyBillWave, FaHistory, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import './WalletComponent.css';
 
 const WalletComponent = () => {
   const [user, setUser] = useState(null);
   const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
   const [toastMessage, setToastMessage] = useState('');
-  const [modalType, setModalType] = useState(null); // 'deposit' or 'withdraw'
+  const [modalType, setModalType] = useState(null);
   const [amountInput, setAmountInput] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [transactionsPerPage] = useState(8);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const wallet = await getWalletBalance();
         const history = await getTransactionHistory();
-        setUser(wallet.account);
-        setBalance(wallet.balance);
-        // setTransactions(wallet.transactionList);
-        setTransactions(history);
-      } catch {
+        
+        if (wallet && wallet.account) {
+          setUser(wallet.account);
+          setBalance(wallet.balance || 0);
+        }
+        
+        if (Array.isArray(history)) {
+          setTransactions(history);
+        } else {
+          setTransactions([]);
+          setToastMessage('Không có dữ liệu giao dịch');
+        }
+      } catch (error) {
+        console.error('Error fetching wallet data:', error);
         setToastMessage('Không thể tải dữ liệu ví!');
+        setTransactions([]);
+        setBalance(0);
       }
     };
     fetchData();
   }, []);
+
+  // Tính toán phân trang
+  const indexOfLastTransaction = currentPage * transactionsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+  const currentTransactions = transactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
+  const totalPages = Math.ceil(transactions.length / transactionsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const formatCurrency = (value) => {
     if (!value) return '';
@@ -64,112 +87,147 @@ const WalletComponent = () => {
       setAmountInput('');
     }
   };
+
   const formatAmountWithSign = (amount, type) => {
     if (amount == null) return '0 đ';
-
-    // Các loại giao dịch mà số tiền là cộng (+)
     const positiveTypes = ['DEPOSIT'];
-    
-    // Các loại giao dịch mà số tiền là trừ (-)
     const negativeTypes = ['WITHDRAW', 'DEPOSIT_HOLD', 'PAYMENT'];
-
-    // Nếu là chủ xe nhận (nếu có thông tin, ví dụ tx.isReceiver = true)
-    // thì đảo dấu cho PAYMENT (ví dụ chủ xe nhận được tiền thanh toán => +)
-    // Giả sử nếu có field tx.isReceiver thì xử lý như này:
-    // if (type === 'PAYMENT' && tx.isReceiver) return '+' + amount.toLocaleString() + ' đ';
-
-    // Ở đây bạn chưa có dữ liệu nào cho biết chủ xe nhận, nếu có bạn có thể bổ sung logic.
-
     let sign = '';
     if (positiveTypes.includes(type)) {
       sign = '+';
     } else if (negativeTypes.includes(type)) {
       sign = '-';
     }
-
     return sign + amount.toLocaleString() + ' đ';
   };
 
-
   return (
-    <div className="container mt-4">
-      <h2>Ví của bạn</h2>
-      {user && (
-        <div>
-          <h5>Chủ tài khoản: {user.username}</h5>
-          <p><strong>Số dư:</strong> {balance.toLocaleString()} VND</p>
-          <div className="mb-3">
-            <button className="btn btn-success me-2" onClick={() => setModalType('deposit')}>Nạp tiền</button>
-            <button className="btn btn-warning" onClick={() => setModalType('withdraw')}>Rút tiền</button>
-            <a href="/vn-pay" className='btn btn-secondary'>Nạp / rút</a>
+    <div className="wallet-container">
+      <div className="wallet-header">
+        <div className="wallet-info">
+          <div className="wallet-icon">
+            <FaWallet size={40} />
           </div>
+          <div className="wallet-details">
+            <h2>Ví của {user?.username}</h2>
+            <div className="balance-display">
+              <span className="balance-label">Số dư hiện tại:</span>
+              <span className="balance-amount">{balance.toLocaleString()} VNĐ</span>
+            </div>
+          </div>
+        </div>
+        <div className="wallet-actions">
+          <button className="btn-deposit" onClick={() => setModalType('deposit')}>
+            <FaArrowDown /> Nạp tiền
+          </button>
+          <button className="btn-withdraw" onClick={() => setModalType('withdraw')}>
+            <FaArrowUp /> Rút tiền
+          </button>
+          <a href="/vn-pay" className="btn-vnpay">
+            <FaMoneyBillWave /> VNPay
+          </a>
+        </div>
+      </div>
 
-          <h4>Lịch sử giao dịch</h4>
-          <table className="table table-bordered">
-            <thead className="table-secondary">
+      <div className="transaction-history">
+        <div className="history-header">
+          <h3><FaHistory /> Lịch sử giao dịch</h3>
+        </div>
+        <div className="table-responsive">
+          <table className="transaction-table">
+            <thead>
               <tr>
                 <th>#</th>
                 <th>Số tiền</th>
                 <th>Loại</th>
                 <th>Mô tả</th>
-                <th>Số dư</th>
                 <th>Thời gian</th>
+                <th>Số dư</th>
               </tr>
             </thead>
             <tbody>
-              {Array.isArray(transactions) && transactions.length === 0 ? (
-                  <tr><td colSpan="5">Chưa có giao dịch nào.</td></tr>
-                ) : (
-                  transactions?.map((tx, index) => (
-                    <tr key={tx.id}>
-                      <td>{index + 1}</td>
-                      {/* <td>{tx.amount.toLocaleString()} VND</td> */}
-                      <td>{formatAmountWithSign(tx.amount.toLocaleString(), tx.type)}</td>
-
-                      <td>{translateType(tx.type)}</td>
-                      <td>{tx.description}</td>
-                      <td>{(tx.balanceAfter ?? 0).toLocaleString() + ' đ'}</td>
-                      <td>{new Date(tx.transactionTime).toLocaleString()}</td>
-                    </tr>
-                  ))
-                )}
-
+              {currentTransactions.length === 0 ? (
+                <tr><td colSpan="6" className="no-transactions">Chưa có giao dịch nào.</td></tr>
+              ) : (
+                currentTransactions.map((tx, index) => (
+                  <tr key={tx.id} className={tx.type ? tx.type.toLowerCase() : ''}>
+                    <td>{(currentPage - 1) * transactionsPerPage + index + 1}</td>
+                    <td className={tx.type === 'DEPOSIT' ? 'amount-positive' : 'amount-negative'}>
+                      {formatAmountWithSign(tx.amount, tx.type)}
+                    </td>
+                    <td>{translateType(tx.type || 'UNKNOWN')}</td>
+                    <td>{tx.description || '-'}</td>
+                    <td>{tx.transactionTime ? new Date(tx.transactionTime).toLocaleString() : '-'}</td>
+                    <td>{(tx.balanceAfter ?? 0).toLocaleString() + ' đ'}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
-      )}
 
-      {/* Modal */}
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button 
+              onClick={() => paginate(currentPage - 1)} 
+              disabled={currentPage === 1}
+              className="page-btn"
+            >
+              &laquo;
+            </button>
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => paginate(index + 1)}
+                className={`page-btn ${currentPage === index + 1 ? 'active' : ''}`}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button 
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="page-btn"
+            >
+              &raquo;
+            </button>
+          </div>
+        )}
+      </div>
+
       {modalType && (
-        <div className="modal d-block" tabIndex="-1">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">{modalType === 'deposit' ? 'Nạp tiền' : 'Rút tiền về tài khoản'}</h5>
-                <button type="button" className="btn-close" onClick={() => setModalType(null)}></button>
-              </div>
-              <div className="modal-body">
-                <label>Nhập số tiền</label>
+        <div className="modal-overlay">
+          <div className='modal-overlay-content'>
+
+          
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5>{modalType === 'deposit' ? 'Nạp tiền vào ví' : 'Rút tiền về tài khoản'}</h5>
+              <button className="close-btn" onClick={() => setModalType(null)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <div className="amount-input">
+                <label>Số tiền</label>
                 <input
                   type="text"
-                  className="form-control"
                   value={formatCurrency(amountInput)}
                   onChange={(e) => setAmountInput(e.target.value)}
+                  placeholder="Nhập số tiền"
                 />
-                {modalType === 'withdraw' && (
-                  <button
-                    className="btn btn-sm btn-outline-secondary mt-2"
-                    onClick={() => setAmountInput(balance.toString())}
-                  >
-                    Toàn bộ ({balance.toLocaleString()} đ)
-                  </button>
-                )}
               </div>
-              <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setModalType(null)}>Hủy</button>
-                <button className="btn btn-primary" onClick={handleSubmit}>Xác nhận</button>
-                
-              </div>
+              {modalType === 'withdraw' && (
+                <button
+                  className="max-amount-btn"
+                  onClick={() => setAmountInput(balance.toString())}
+                >
+                  Rút toàn bộ ({balance.toLocaleString()} đ)
+                </button>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button className="cancel-btn" onClick={() => setModalType(null)}>Hủy</button>
+              <button className="confirm-btn" onClick={handleSubmit}>Xác nhận</button>
+            </div>
             </div>
           </div>
         </div>
@@ -186,6 +244,7 @@ const translateType = (type) => {
     case 'WITHDRAW': return 'Rút tiền';
     case 'DEPOSIT_HOLD': return 'Đặt cọc xe';
     case 'PAYMENT': return 'Thanh toán xe';
+    case 'UNKNOWN': return 'Không xác định';
     default: return type;
   }
 };
